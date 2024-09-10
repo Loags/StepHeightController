@@ -189,7 +189,7 @@ MonoBehaviour:
   stepUpAngleThreshold: 65
   layersToIgnore:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   disableStepHeight: 0
   debugLog: 1
   debugLogWarning: 1
