@@ -15,6 +15,9 @@ namespace LB.Player.Movement.StepHeight
 		// Enables movement input and subscribes to input events
 		public void EnableMovementInput()
 		{
+			Debug.Log($"InputManager.inputMap: {InputManager.inputMap}");
+			Debug.Log($"InputManager.inputMap.Player: {InputManager.inputMap.Player}");
+			Debug.Log($"InputManager.inputMap.Player.Movement: {InputManager.inputMap.Player.Movement}");
 			InputManager.inputMap.Player.Movement.performed +=
 				ctx => OnMovementPerformed?.Invoke(ctx.ReadValue<Vector2>());
 			InputManager.inputMap.Player.Movement.canceled += ctx => OnMovementCanceled?.Invoke();

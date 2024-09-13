@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Playertag
+  - Stairs
   layers:
   - Default
   - TransparentFX

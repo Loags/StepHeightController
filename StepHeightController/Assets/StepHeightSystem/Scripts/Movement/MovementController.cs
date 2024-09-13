@@ -69,7 +69,7 @@ namespace LB.Player.Movement
 		/// <summary>
 		/// Subscribes to input events when the script is enabled.
 		/// </summary>
-		private void OnEnable()
+		private void OnEnable() 
 		{
 			InputManager.inputMap.Player.MouseDelta.performed += ctx => mouseDelta = ctx.ReadValue<Vector2>();
 			InputManager.inputMap.Player.MouseDelta.Enable();

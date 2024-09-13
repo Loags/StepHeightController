@@ -10,7 +10,7 @@ namespace LB.Player.Movement.StepHeight
 	/// over the obstacle if conditions are met. The stepping logic is highly configurable and
 	/// includes features such as debugging visualizations and collision checks.
 	/// </summary>
-	public class StepHeightController : MonoBehaviour
+	public class StepHeightController : MonoBehaviour 
 	{
 		// Reference to the Collider Manager, handles player collider interactions
 		private IColliderManager colliderManager;

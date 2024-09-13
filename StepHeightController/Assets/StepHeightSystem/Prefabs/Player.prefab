@@ -191,10 +191,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   disableStepHeight: 0
-  debugLog: 1
-  debugLogWarning: 1
-  debugLogError: 1
-  debugVisualization: 1
+  debugLog: 0
+  debugLogWarning: 0
+  debugLogError: 0
+  debugVisualization: 0
 --- !u!1 &383432605143584636
 GameObject:
   m_ObjectHideFlags: 0
