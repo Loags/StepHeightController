@@ -99,21 +99,61 @@ Open `Samples/Scenes/StepHeightDemo.unity` and enter Play Mode.
 
 The scene labels sections by expected result: valid 0.30 m steps, boundary 0.50 m steps, rejected over-height obstacles, narrow and standard stairs, irregular geometry, a rotated step, a low ceiling, a slope, and an ignored trigger.
 
-## More documentation
+## Public API
 
-- [Public API](API.md)
-- [Collider and environment support](COLLIDER_SUPPORT.md)
-- [Troubleshooting](TROUBLESHOOTING.md)
-- [Migration from the original prototype](MIGRATION.md)
-- [Changelog](CHANGELOG.md)
+See [Public API](API.md) for request results, lifecycle events, cancellation, collider-cache refresh, and an integration example.
 
-## Important limitations
+## Collider and environment support
 
-- The Rigidbody root must use world-up orientation. Child player colliders and environment colliders may be offset or rotated.
-- Moving-platform velocity is not inherited and an accepted target is not continuously retargeted while the platform moves.
-- MeshCollider is supported for environment geometry, not as a player collider.
-- This is a step-up system, not climbing, vaulting, ledge grabbing, or full character locomotion.
+| Setup | Support | Notes |
+| --- | --- | --- |
+| CapsuleCollider player | Primary | Offset, direction, rotation, and lossy scale are respected. |
+| BoxCollider player | Supported | Center, rotation, size, and non-uniform scale are respected. |
+| SphereCollider player | Supported | The largest scaled axis defines the world radius. |
+| Compound primitive player | Supported | Every enabled, non-trigger supported shape is checked at the target. |
+| Child player colliders | Supported | Enable Include Child Colliders. |
+| MeshCollider player | Not supported | Keep meshes visual-only and use primitive physics colliders. |
+| Environment colliders | Supported | Primitive, MeshCollider, TerrainCollider, and compound geometry can participate. |
 
-## Support information
+The Rigidbody and `StepHeightController` must be on the same root. The root must remain aligned to world up, although child colliders and environment geometry may be offset or rotated. Candidate selection uses collider closest points and raycasts; the selected top must satisfy Maximum Surface Angle.
 
-Publisher support email and maintained website are release metadata and will be finalized during the separate Asset Store release-polish task.
+All queries consistently apply Ignored Layers and Trigger Interaction. Player colliders and colliders attached to the same Rigidbody are filtered automatically.
+
+## Troubleshooting
+
+### TryStep returns NoCandidate
+
+- Confirm the caller is close enough and the world-space direction points toward the obstacle.
+- Check Detection Distance, Ignored Layers, Maximum Step Height, Maximum Surface Angle, and Maximum Approach Angle.
+- Reduce Surface Probe Inset carefully when valid treads are very thin.
+
+### TryStep returns Blocked
+
+A valid top was found, but the configured player shapes do not fit at the target. Check low ceilings, side walls, unused child colliders, Landing Inset, and Clearance. Enable Scene Visualization to inspect the accepted direction and target.
+
+### The player intersects the step edge
+
+Increase Landing Inset in small increments. Surface Probe Inset controls top detection; Clearance only changes the final overlap query and does not raise the landing position.
+
+### The player drops, jitters, or fights the step
+
+Do not write competing Rigidbody positions while `IsStepping` is true. For dynamic bodies, suspend additional downward acceleration during the step so gravity does not accumulate into a landing correction. The included sample demonstrates this ownership handoff.
+
+### A slope starts repeated tiny steps
+
+The approach probe rejects walkable faces. Ensure the slope collider has accurate surface normals and is not constructed from many vertical micro-faces.
+
+### Runtime collider changes are ignored
+
+Call `RefreshColliderCache()` after adding, removing, enabling, disabling, or resizing player colliders. Refreshing intentionally cancels an active step.
+
+### The sample input does not respond
+
+Install Input System 1.19.0 or a compatible version and ensure Active Input Handling includes the Input System. This dependency belongs only to the sample assembly.
+
+## Limitations
+
+- Physics queries are capped at 256 results. Saturation returns `QueryCapacityExceeded`; use collision layers or simpler local collision geometry.
+- An accepted target is sampled once. Fast moving or rotating platforms are not continuously retargeted, and their velocity is not transferred to the player.
+- Highly concave MeshCollider environments can expose a different top collider than their approach face. Simple collision proxies are the most predictable setup.
+- This is a step-up system, not climbing, vaulting, ledge grabbing, or complete character locomotion.
