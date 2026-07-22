@@ -16,7 +16,7 @@ namespace LB.Player.Movement.StepHeight
 		}
 
 		// Current velocity of the Rigidbody
-		public Vector3 Velocity => rigidbody.velocity;
+		public Vector3 Velocity => rigidbody.linearVelocity;
 
 		// Current position of the Rigidbody
 		public Vector3 Position => rigidbody.position;

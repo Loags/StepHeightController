@@ -139,8 +139,8 @@ namespace LB.Player.Movement
 					currentMovement.z *= .5f;
 				}
 
-				rigidbody.velocity = currentMovement;
-				if (rigidbody.velocity.magnitude < .3f && grounded && onStair && !magnetJoint)
+				rigidbody.linearVelocity = currentMovement;
+				if (rigidbody.linearVelocity.magnitude < .3f && grounded && onStair && !magnetJoint)
 				{
 					rigidbody.isKinematic = true; // Set Rigidbody to kinematic if almost stationary on stairs
 				}
@@ -249,14 +249,14 @@ namespace LB.Player.Movement
 				previousInputInfluence = newMovement;
 			}
 
-			rigidbody.velocity = currentMovement + newMovement;
+			rigidbody.linearVelocity = currentMovement + newMovement;
 
 			// Clamp player velocity to running speed
-			float clampedX = Mathf.Clamp(rigidbody.velocity.x, -runningSpeed, runningSpeed);
-			float clampedZ = Mathf.Clamp(rigidbody.velocity.z, -runningSpeed, runningSpeed);
-			rigidbody.velocity = new Vector3(clampedX, rigidbody.velocity.y, clampedZ);
+			float clampedX = Mathf.Clamp(rigidbody.linearVelocity.x, -runningSpeed, runningSpeed);
+			float clampedZ = Mathf.Clamp(rigidbody.linearVelocity.z, -runningSpeed, runningSpeed);
+			rigidbody.linearVelocity = new Vector3(clampedX, rigidbody.linearVelocity.y, clampedZ);
 
-			if (!hasInput && rigidbody.velocity.magnitude < .3f && grounded && onStair && !magnetJoint)
+			if (!hasInput && rigidbody.linearVelocity.magnitude < .3f && grounded && onStair && !magnetJoint)
 			{
 				rigidbody.isKinematic = true;
 			}
@@ -285,7 +285,7 @@ namespace LB.Player.Movement
 		/// <returns>The velocity of the player without input influences (if input is provided, else the unmodified velocity).</returns>
 		private Vector3 GetModifiedVelocity(bool _hasInput)
 		{
-			Vector3 rawVelocity = rigidbody.velocity;
+			Vector3 rawVelocity = rigidbody.linearVelocity;
 
 			if (_hasInput)
 			{
@@ -348,9 +348,9 @@ namespace LB.Player.Movement
 			if (blockMovement) return;
 
 			rigidbody.isKinematic = false;
-			Vector3 vel = transform.InverseTransformDirection(rigidbody.velocity); // Get velocity in local space
+			Vector3 vel = transform.InverseTransformDirection(rigidbody.linearVelocity); // Get velocity in local space
 			vel.y = jumpForce;
-			rigidbody.velocity = transform.TransformDirection(vel); // Apply the jump force
+			rigidbody.linearVelocity = transform.TransformDirection(vel); // Apply the jump force
 		}
 	}
 }
