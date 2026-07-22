@@ -9,6 +9,11 @@ This roadmap turns the current prototype into a stable, reusable Unity Asset Sto
 
 The phases are sequential unless a task is explicitly described as parallel. Each phase must leave the package compiling without warnings or errors introduced by the product before the next phase begins.
 
+## Implementation status — July 22, 2026
+
+- **Phases 1-9:** Implemented and validated in Unity 6.5.2f1, with the trimmed release payload additionally batch-validated in Unity 6.0.67f1. The recorded focused suites pass 12/12 EditMode and 20/20 PlayMode. The earlier 14/14 PlayMode suite also passed with domain reload disabled; the newer motion-parity, consecutive-stair, slope-rejection, and completion-settling cases remain to be rerun in that configuration before release sign-off. The sample Play Mode smoke checks are clean, and the Asset Store Tools engineering preflight is all green.
+- **Phase 10:** Still deferred. It remains a separate future release task and has not been started in this iteration.
+
 ## Product principles
 
 - The runtime stepping system must not own or require player input.

@@ -1,4 +1,10 @@
 ﻿<Solution>
   <Project Path="asset-store-tools-editor.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="LB.StepHeight.Runtime.csproj" />
+  <Project Path="LB.StepHeight.Diagnostics.Editor.csproj" />
+  <Project Path="LB.StepHeight.TestRunner.csproj" />
+  <Project Path="LB.StepHeight.Tests.PlayMode.csproj" />
+  <Project Path="LB.StepHeight.Samples.csproj" />
+  <Project Path="LB.StepHeight.Editor.csproj" />
+  <Project Path="LB.StepHeight.Tests.EditMode.csproj" />
 </Solution>
