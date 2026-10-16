@@ -1,0 +1,10 @@
+{
+  "name": "step-height-controller-publisher-media",
+  "private": true,
+  "scripts": {
+    "build": "node build-branding.cjs"
+  },
+  "devDependencies": {
+    "sharp": "0.35.5"
+  }
+}

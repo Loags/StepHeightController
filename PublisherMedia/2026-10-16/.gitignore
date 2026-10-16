@@ -1,0 +1,23 @@
+# Track approved artwork and final demo media only. Keep proofs and experiments local.
+/*
+!/.gitignore
+!/README.md
+!/BRANDING.md
+!/package.json
+!/build-branding.cjs
+!/cover.svg
+!/card.svg
+!/icon.svg
+!/social.svg
+!/cover-1950x1300.png
+!/card-420x280.png
+!/icon-160x160.png
+!/social-1200x630.png
+!/demos-v5/
+/demos-v5/*
+!/demos-v5/demo-1.png
+!/demos-v5/demo-2.png
+!/demos-v5/demo-3.png
+!/demos-v5/demo-4.png
+!/demos-v5/demo-6.png
+!/demos-v5/StepHeightController-2.0.0-Rigidbody-Demos.mp4

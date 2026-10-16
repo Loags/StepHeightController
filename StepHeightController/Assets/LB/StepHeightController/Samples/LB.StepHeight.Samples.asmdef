@@ -3,7 +3,9 @@
     "rootNamespace": "LB.StepHeight.Samples",
     "references": [
         "LB.StepHeight.Runtime",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.ugui",
+        "Unity.Cinemachine"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -11,7 +13,27 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
+    "defineConstraints": [
+        "STEPHEIGHT_INPUT_SYSTEM",
+        "STEPHEIGHT_UGUI",
+        "STEPHEIGHT_CINEMACHINE"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.19.0",
+            "define": "STEPHEIGHT_INPUT_SYSTEM"
+        },
+        {
+            "name": "com.unity.ugui",
+            "expression": "2.0.0",
+            "define": "STEPHEIGHT_UGUI"
+        },
+        {
+            "name": "com.unity.cinemachine",
+            "expression": "3.1.7",
+            "define": "STEPHEIGHT_CINEMACHINE"
+        }
+    ],
     "noEngineReferences": false
 }

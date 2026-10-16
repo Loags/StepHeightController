@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="StepHeightSetupWindow.uss" />
+    <ui:ScrollView class="setup-root">
+        <ui:Label text="Configure your Rigidbody player" class="setup-title" />
+        <ui:Label text="Keep your current movement, input and camera. This tool only makes the changes listed in the preview." class="setup-copy" />
+        <ui:VisualElement name="playerFieldContainer" />
+        <ui:VisualElement class="setup-row">
+            <ui:Button name="selectionButton" text="Use selected object" />
+            <ui:Button name="refreshButton" text="Refresh preview" />
+        </ui:VisualElement>
+        <ui:Label text="Optional Rigidbody adjustments" class="setup-section" />
+        <ui:Toggle name="smoothMovement" label="Smooth movement with Rigidbody interpolation" />
+        <ui:Toggle name="keepUpright" label="Keep the Rigidbody upright (freeze X/Z rotation)" />
+        <ui:Label text="Preview" class="setup-section" />
+        <ui:Label name="previewLabel" class="setup-copy" />
+        <ui:Button name="applyButton" text="Apply listed changes" />
+        <ui:Label text="Connect your movement loop" class="setup-section" />
+        <ui:Label text="Your movement controller must request steps with TryStep while grounded and moving, and pause its horizontal velocity writes during a step. Setup does not rewrite scripts. See the quick start for the small integration example." class="setup-copy" />
+        <ui:Label text="Apply supports Undo. Save your scene when you are happy with the result." class="setup-copy" />
+        <ui:Button name="documentationButton" text="Open quick start" />
+    </ui:ScrollView>
+</ui:UXML>

@@ -22,6 +22,12 @@ namespace LB.StepHeight.Editor
         private SerializedProperty _includeChildColliders;
         private SerializedProperty _debugVisualization;
         private SerializedProperty _steppingDisabled;
+        private bool _showAdvanced;
+        private int _heightPreset = 1;
+        private int _feelPreset = 1;
+
+        private static readonly string[] HeightPresets = { "Low steps — 0.25 m", "All-round — 0.50 m", "Tall steps — 0.75 m" };
+        private static readonly string[] FeelPresets = { "Gentle", "Balanced", "Responsive" };
 
         private void OnEnable()
         {
@@ -46,55 +52,83 @@ namespace LB.StepHeight.Editor
         {
             serializedObject.Update();
 
-            using (new EditorGUI.DisabledScope(_steppingDisabled.hasMultipleDifferentValues))
+            EditorGUI.BeginChangeCheck();
+            EditorGUI.showMixedValue = _steppingDisabled.hasMultipleDifferentValues;
+            bool steppingEnabled = EditorGUILayout.Toggle(new GUIContent("Stepping Enabled", "Accept new step requests. Turning this off also cancels an active step."), !_steppingDisabled.boolValue);
+            EditorGUI.showMixedValue = false;
+            bool enabledChanged = EditorGUI.EndChangeCheck();
+            if (enabledChanged) _steppingDisabled.boolValue = !steppingEnabled;
+
+            EditorGUILayout.PropertyField(_stepHeight, new GUIContent("Maximum Step Height (m)", "Largest vertical rise accepted as a step."));
+            EditorGUILayout.PropertyField(_stepSpeed, new GUIContent("Step Speed (m/s)", "Average speed used to move the player onto a step."));
+            EditorGUILayout.PropertyField(_layersToIgnore, new GUIContent("Ignored Layers", "Exclude these layers from all stepping checks."));
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Quick Presets", EditorStyles.boldLabel);
+            using (new EditorGUILayout.HorizontalScope())
             {
-                bool steppingEnabled = EditorGUILayout.Toggle(new GUIContent("Stepping Enabled",
-                    "Controls whether the component accepts new step requests."), !_steppingDisabled.boolValue);
-                _steppingDisabled.boolValue = !steppingEnabled;
+                _heightPreset = EditorGUILayout.Popup("Height", _heightPreset, HeightPresets);
+                if (GUILayout.Button("Apply", GUILayout.Width(50f))) ApplyHeightPreset();
             }
 
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Detection", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_stepHeight, new GUIContent("Maximum Step Height (m)",
-                "Largest vertical rise accepted as a step."));
-            EditorGUILayout.PropertyField(_minimumStepHeight, new GUIContent("Minimum Step Height (m)",
-                "Smaller rises are treated as ordinary ground variation."));
-            EditorGUILayout.PropertyField(_maximumSurfaceAngle, new GUIContent("Maximum Surface Angle (°)",
-                "Steeper top surfaces are not considered walkable."));
-            EditorGUILayout.PropertyField(_maximumApproachAngle, new GUIContent("Maximum Approach Angle (°)",
-                "Maximum horizontal angle between movement intent and an obstacle."));
-            EditorGUILayout.PropertyField(_detectionDistance, new GUIContent("Detection Distance (m)",
-                "Additional horizontal reach beyond the player collider."));
-            EditorGUILayout.PropertyField(_surfaceProbeInset, new GUIContent("Surface Probe Inset (m)",
-                "Distance beyond an obstacle face used to find its top surface."));
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                _feelPreset = EditorGUILayout.Popup("Feel", _feelPreset, FeelPresets);
+                if (GUILayout.Button("Apply", GUILayout.Width(50f))) ApplyFeelPreset();
+            }
 
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Movement", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_stepSpeed, new GUIContent("Step Speed (m/s)",
-                "Maximum average speed used to move the Rigidbody to the accepted target."));
-            EditorGUILayout.PropertyField(_minimumStepDuration, new GUIContent("Minimum Step Duration (s)",
-                "Prevents short steps from completing in too few physics updates without slowing consecutive stairs."));
-            EditorGUILayout.PropertyField(_landingInset, new GUIContent("Landing Inset (m)",
-                "Distance beyond the detected obstacle face used for the final Rigidbody position."));
-            EditorGUILayout.PropertyField(_clearance, new GUIContent("Clearance (m)",
-                "Small separation used by final-position collision checks."));
+            EditorGUILayout.LabelField("Height and feel are independent. Your ignored layers stay unchanged.", EditorStyles.wordWrappedMiniLabel);
+            _showAdvanced = EditorGUILayout.Foldout(_showAdvanced, "Advanced", true);
+            if (_showAdvanced) DrawAdvanced();
 
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Collision Filtering", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_layersToIgnore, new GUIContent("Ignored Layers",
-                "These layers are excluded consistently from detection, surface, and clearance queries."));
-            EditorGUILayout.PropertyField(_triggerInteraction, new GUIContent("Trigger Interaction"));
-            EditorGUILayout.PropertyField(_includeChildColliders, new GUIContent("Include Child Colliders",
-                "Treat supported colliders in the player's hierarchy as one compound shape."));
-
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Diagnostics", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_debugVisualization, new GUIContent("Scene Visualization"));
+            if (enabledChanged && Application.isPlaying)
+            {
+                // Use the public property as well so an Inspector toggle cancels an active step.
+                foreach (Object selectedTarget in targets)
+                {
+                    var controller = (StepHeightController)selectedTarget;
+                    controller.SteppingEnabled = steppingEnabled;
+                }
+            }
 
             serializedObject.ApplyModifiedProperties();
 
             DrawSetupStatus();
             DrawRuntimeControls();
+            if (GUILayout.Button("Setup & Demos")) StepHeightSetupWindow.Open();
+        }
+
+        private void ApplyHeightPreset()
+        {
+            // Height presets touch only the accepted height range.
+            _stepHeight.floatValue = _heightPreset == 0 ? 0.25f : _heightPreset == 1 ? 0.5f : 0.75f;
+            _minimumStepHeight.floatValue = 0.02f;
+        }
+
+        private void ApplyFeelPreset()
+        {
+            _stepSpeed.floatValue = _feelPreset == 0 ? 2.5f : _feelPreset == 1 ? 4.5f : 6.5f;
+            _minimumStepDuration.floatValue = _feelPreset == 0 ? 0.2f : _feelPreset == 1 ? 0.12f : 0.08f;
+        }
+
+        private void DrawAdvanced()
+        {
+            EditorGUI.indentLevel++;
+            EditorGUILayout.LabelField("Detection", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_minimumStepHeight, new GUIContent("Minimum Step Height (m)", "Smaller rises are ordinary ground variation."));
+            EditorGUILayout.PropertyField(_maximumSurfaceAngle, new GUIContent("Maximum Surface Angle (°)", "Steeper top surfaces are not walkable."));
+            EditorGUILayout.PropertyField(_maximumApproachAngle, new GUIContent("Maximum Approach Angle (°)", "Horizontal angle allowed between movement and an obstacle."));
+            EditorGUILayout.PropertyField(_detectionDistance, new GUIContent("Detection Distance (m)", "Extra reach beyond the player collider."));
+            EditorGUILayout.PropertyField(_surfaceProbeInset, new GUIContent("Surface Probe Inset (m)", "Distance beyond the obstacle face used to find its top."));
+            EditorGUILayout.LabelField("Movement", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_minimumStepDuration, new GUIContent("Minimum Step Duration (s)", "Keeps small rises smooth without slowing consecutive stairs."));
+            EditorGUILayout.PropertyField(_landingInset, new GUIContent("Landing Inset (m)", "Distance beyond the obstacle face at the end of a step."));
+            EditorGUILayout.PropertyField(_clearance, new GUIContent("Clearance (m)", "Small gap used by destination collision checks."));
+            EditorGUILayout.LabelField("Collision & Diagnostics", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_triggerInteraction, new GUIContent("Trigger Interaction"));
+            EditorGUILayout.PropertyField(_includeChildColliders, new GUIContent("Include Child Colliders", "Include primitive colliders belonging to this Rigidbody."));
+            EditorGUILayout.PropertyField(_debugVisualization, new GUIContent("Scene Visualization"));
+            EditorGUI.indentLevel--;
         }
 
         private void DrawSetupStatus()
@@ -102,11 +136,12 @@ namespace LB.StepHeight.Editor
             if (targets.Length != 1) return;
 
             var controller = (StepHeightController)target;
-            Collider[] colliders = controller.GetComponentsInChildren<Collider>(true);
+            Rigidbody body = controller.GetComponent<Rigidbody>();
+            Collider[] colliders = _includeChildColliders.boolValue ? controller.GetComponentsInChildren<Collider>(true) : controller.GetComponents<Collider>();
             bool hasSupportedCollider = false;
             foreach (Collider playerCollider in colliders)
             {
-                if (playerCollider.enabled && !playerCollider.isTrigger &&
+                if (playerCollider.enabled && playerCollider.gameObject.activeInHierarchy && !playerCollider.isTrigger && playerCollider.attachedRigidbody == body &&
                     (playerCollider is CapsuleCollider || playerCollider is BoxCollider ||
                      playerCollider is SphereCollider))
                 {
@@ -122,9 +157,13 @@ namespace LB.StepHeight.Editor
                     MessageType.Error);
             }
 
-            if (controller.GetComponent<Rigidbody>() == null)
+            if (body == null)
             {
                 EditorGUILayout.HelpBox("A Rigidbody is required on the same GameObject.", MessageType.Error);
+            }
+            else if (body.isKinematic)
+            {
+                EditorGUILayout.HelpBox("Use a non-kinematic Rigidbody for stepping.", MessageType.Warning);
             }
         }
 

@@ -70,3 +70,9 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Local publishing automation, audits, exports, source caches and clean-import projects.
+/ReleaseArtifacts/
+
+# Unity-generated IDE solution.
+*.slnx

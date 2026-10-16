@@ -1,0 +1,37 @@
+.setup-root {
+    padding: 16px;
+}
+.setup-title {
+    font-size: 20px;
+    -unity-font-style: bold;
+    margin-bottom: 6px;
+}
+.setup-section {
+    font-size: 14px;
+    -unity-font-style: bold;
+    margin-top: 16px;
+    margin-bottom: 6px;
+}
+.setup-copy {
+    white-space: normal;
+    margin-bottom: 6px;
+}
+.setup-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+.setup-row > Button {
+    margin-right: 6px;
+}
+.package-name {
+    -unity-font-style: bold;
+    margin-top: 8px;
+}
+.needs-action {
+    color: rgb(230, 175, 90);
+}
+.player-field {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

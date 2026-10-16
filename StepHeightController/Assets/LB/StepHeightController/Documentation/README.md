@@ -2,27 +2,32 @@
 
 Step Height Controller adds controlled step-up movement to a Rigidbody character. It detects a walkable top surface in the caller's movement direction, verifies that the configured player colliders fit at the target, and moves the Rigidbody smoothly onto the surface.
 
-The runtime does not read input and does not require the Unity Input System. The included first-person controller and input actions are sample content only.
+The runtime does not read input. The included first-person and third-person Rigidbody players, input actions and cameras are sample content only.
 
 ## Requirements
 
-- Unity 6.0 or newer. The release project is authored with Unity 6.5.2f1 and validated with Unity 6.0.67f1.
+- Unity 6.5 or newer for this complete release package. Demo packages: Input System 1.19.0, Cinemachine 3.1.7, URP 17.5.0 and Unity UI 2.5.0.
 - Unity Physics (`com.unity.modules.physics`).
 - A Rigidbody and at least one enabled, non-trigger CapsuleCollider, BoxCollider, or SphereCollider in the player hierarchy.
 - A movement controller that can call the stepping API from its physics loop.
-- The optional sample uses Input System 1.19.0 and the URP version matching the Editor: validated with URP 17.0.4 on Unity 6.0 and URP 17.5.0 on Unity 6.5. The runtime assembly has no Input System or render-pipeline dependency.
+- Open **Tools > Step Height Controller > Setup & Demos** to check demo packages, open Package Manager, and follow the render-pipeline and input settings guidance. Missing demo dependencies disable the sample assembly; the stepping runtime and setup windows remain available.
+- The runtime assembly itself has no Input System or render-pipeline dependency. Earlier runtime/sample checks used Unity 6.0.67f1 with URP 17.0.4, but this exact release archive is not prepared or verified as a Unity 6.0 import.
 
 ## Package layout
 
 ```text
 Assets/LB/StepHeightController/
   Runtime/         Input-independent runtime and public API
-  Editor/          Custom Inspector and setup feedback
-  Samples/         Demo scene, player, input, and materials
+  Editor/          Setup windows, presets and simplified Inspector
+  Samples/         Two demos, ready-to-play players and shared course
   Documentation/   Offline setup, API, support, and troubleshooting
 ```
 
 ## Quick start
+
+Updating from 1.0.0? Read [Upgrading to 2.0](UPGRADE.md) before importing into an existing project.
+
+For a guided start, open **Tools > Step Height Controller > Setup & Demos** and follow the [quick start](Setup.md). **Configure Rigidbody Player** previews reversible component and physics changes. Your existing movement script remains responsible for calling the stepping API.
 
 1. Add a Rigidbody to the player root.
 2. Add a CapsuleCollider, BoxCollider, or SphereCollider to the root or a child.
@@ -90,14 +95,23 @@ Enable Scene Visualization and select the component to display the detection reg
 
 ## Sample
 
-Open `Samples/Scenes/StepHeightDemo.unity` and enter Play Mode.
+Open **Setup & Demos**, choose the first-person or third-person demo, and enter Play Mode. Both scenes reference the same obstacle-course prefab. Separate ready-to-play player prefabs include explicitly wired input, animation, HUD and Cinemachine cameras.
 
 - Move: WASD
 - Look: Mouse
 - Sprint: Left Shift
 - Jump: Space
+- Toggle stepping on this player: T
+- Reset player and camera: R
+- Release cursor: Esc; click the game to resume
 
-The scene labels sections by expected result: valid 0.30 m steps, boundary 0.50 m steps, rejected over-height obstacles, narrow and standard stairs, irregular geometry, a rotated step, a low ceiling, a slope, and an ignored trigger.
+Compare enabled and disabled stepping at labeled stations for valid steps, height limits, narrow and standard stairs, angled approaches and blocked clearance. Jump cancels an active step immediately. Reset clears the active step, velocities, queued jump, animation and camera history; it preserves the stepping toggle.
+
+The first-person player renders animated legs below a stable camera. The third-person player uses a free orbit camera and faces its movement direction. These are Rigidbody demos using Starter Assets visuals, not integrations with Unity's original CharacterController scripts. No gamepad or mobile controls are included. The original `StepHeightDemo` scene remains as a basic geometry reference.
+
+## Support and release history
+
+For questions, use the publisher's [support contact](https://www.loags.de/contact/). See [release history](CHANGELOG.md), [upgrade guidance](UPGRADE.md), and [third-party notices](Third-Party%20Notices.txt).
 
 ## Public API
 
