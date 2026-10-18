@@ -1455,7 +1455,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineFollow
   TrackerSettings:
-    BindingMode: 3
+    BindingMode: 1
     PositionDamping: {x: 0, y: 0.08, z: 0}
     AngularDampingMode: 0
     RotationDamping: {x: 0, y: 0, z: 0}
@@ -2211,10 +2211,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: LB.StepHeight.Runtime::LB.StepHeight.StepHeightController
   stepHeight: 0.5
-  minimumStepHeight: 0.02
+  minimumStepHeight: 0.03
   maximumSurfaceAngle: 50
   maximumApproachAngle: 65
-  detectionDistance: 0.15
+  detectionDistance: 0.3
   surfaceProbeInset: 0.1
   stepSpeed: 4.5
   minimumStepDuration: 0.12
@@ -2250,8 +2250,8 @@ MonoBehaviour:
   moveSpeed: 4.5
   sprintSpeed: 6.725
   groundAcceleration: 35
-  jumpVelocity: 7
-  gravityMultiplier: 1
+  jumpVelocity: 5.5
+  gravityMultiplier: 2
   lookSensitivity: 5
   pitchLimit: 80
   groundProbeDistance: 0.12

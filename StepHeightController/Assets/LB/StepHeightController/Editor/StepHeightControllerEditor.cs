@@ -60,7 +60,7 @@ namespace LB.StepHeight.Editor
             if (enabledChanged) _steppingDisabled.boolValue = !steppingEnabled;
 
             EditorGUILayout.PropertyField(_stepHeight, new GUIContent("Maximum Step Height (m)", "Largest vertical rise accepted as a step."));
-            EditorGUILayout.PropertyField(_stepSpeed, new GUIContent("Step Speed (m/s)", "Average speed used to move the player onto a step."));
+            EditorGUILayout.PropertyField(_stepSpeed, new GUIContent("Step Speed (m/s)", "Ascent pace. Forward travel follows the player's incoming movement speed."));
             EditorGUILayout.PropertyField(_layersToIgnore, new GUIContent("Ignored Layers", "Exclude these layers from all stepping checks."));
 
             EditorGUILayout.Space();
@@ -121,9 +121,9 @@ namespace LB.StepHeight.Editor
             EditorGUILayout.PropertyField(_detectionDistance, new GUIContent("Detection Distance (m)", "Extra reach beyond the player collider."));
             EditorGUILayout.PropertyField(_surfaceProbeInset, new GUIContent("Surface Probe Inset (m)", "Distance beyond the obstacle face used to find its top."));
             EditorGUILayout.LabelField("Movement", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_minimumStepDuration, new GUIContent("Minimum Step Duration (s)", "Keeps small rises smooth without slowing consecutive stairs."));
+            EditorGUILayout.PropertyField(_minimumStepDuration, new GUIContent("Minimum Step Duration (s)", "Minimum movement time for one step."));
             EditorGUILayout.PropertyField(_landingInset, new GUIContent("Landing Inset (m)", "Distance beyond the obstacle face at the end of a step."));
-            EditorGUILayout.PropertyField(_clearance, new GUIContent("Clearance (m)", "Small gap used by destination collision checks."));
+            EditorGUILayout.PropertyField(_clearance, new GUIContent("Probe Margin (m)", "Vertical padding around the surface probe. Path checks use a 1 mm contact tolerance."));
             EditorGUILayout.LabelField("Collision & Diagnostics", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(_triggerInteraction, new GUIContent("Trigger Interaction"));
             EditorGUILayout.PropertyField(_includeChildColliders, new GUIContent("Include Child Colliders", "Include primitive colliders belonging to this Rigidbody."));

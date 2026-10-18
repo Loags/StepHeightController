@@ -8,12 +8,15 @@ namespace LB.StepHeight
     {
         private const int InitialBufferCapacity = 32;
         private const int MaximumBufferCapacity = 256;
+        private const int PathSamples = 24;
+        private const float PathContactTolerance = 0.001f;
 
         private readonly Transform _root;
         private readonly Rigidbody _rigidbody;
         private readonly HashSet<Collider> _selfColliders = new HashSet<Collider>();
         private Collider[] _playerColliders = Array.Empty<Collider>();
         private Collider[] _overlapBuffer = new Collider[InitialBufferCapacity];
+        private Collider[] _candidateBuffer = new Collider[InitialBufferCapacity];
         private RaycastHit[] _raycastBuffer = new RaycastHit[InitialBufferCapacity];
         private bool _queryCapacityExceeded;
 
@@ -58,6 +61,10 @@ namespace LB.StepHeight
             if (_queryCapacityExceeded) return StepAttemptResult.QueryCapacityExceeded;
             if (overlapCount == 0) return StepAttemptResult.NoCandidate;
 
+            // Clearance queries reuse the overlap buffer, so retain the original candidates.
+            if (_candidateBuffer.Length < overlapCount) Array.Resize(ref _candidateBuffer, overlapCount);
+            Array.Copy(_overlapBuffer, _candidateBuffer, overlapCount);
+
             bool foundGeometricCandidate = false;
             bool foundBlockedCandidate = false;
             float bestScore = float.NegativeInfinity;
@@ -69,7 +76,7 @@ namespace LB.StepHeight
 
             for (int i = 0; i < overlapCount; i++)
             {
-                Collider obstacle = _overlapBuffer[i];
+                Collider obstacle = _candidateBuffer[i];
                 if (!IsEnvironmentCollider(obstacle)) continue;
 
                 bool hasContactNormal = TryGetContactPoint(obstacle, contactRayOrigin, sideProbe, movementDirection,
@@ -100,11 +107,16 @@ namespace LB.StepHeight
                     if (!StepMath.IsHeightWithinRange(height, settings.MinimumStepHeight,
                             settings.MaximumStepHeight)) continue;
 
-                    foundGeometricCandidate = true;
                     float distanceToFace = Mathf.Max(0f, Vector3.Dot(contact - playerBounds.center, movementDirection));
                     Vector3 targetPosition = _rigidbody.position + up * height +
                         movementDirection * (distanceToFace + settings.LandingInset);
-                    if (!IsPositionClear(targetPosition, settings))
+                    Vector3 landingFeet = new Vector3(playerBounds.center.x, playerBounds.min.y, playerBounds.center.z) +
+                        targetPosition - _rigidbody.position;
+                    // A nearby surface must support the landing, not merely sit beside the movement path.
+                    if (!hit.collider.Raycast(new Ray(landingFeet + up * settings.Clearance, -up), out _, settings.Clearance * 2f)) continue;
+
+                    foundGeometricCandidate = true;
+                    if (!TryFindClearLift(targetPosition, settings, out float liftFraction))
                     {
                         foundBlockedCandidate = true;
                         continue;
@@ -116,7 +128,7 @@ namespace LB.StepHeight
                     if (score <= bestScore) continue;
 
                     bestScore = score;
-                    bestCandidate = new StepCandidate(targetPosition, hit.collider, height);
+                    bestCandidate = new StepCandidate(targetPosition, hit.collider, height, liftFraction);
                 }
             }
 
@@ -170,7 +182,31 @@ namespace LB.StepHeight
             return hasBounds;
         }
 
-        private bool IsPositionClear(Vector3 targetRootPosition, StepQuerySettings settings)
+        private bool TryFindClearLift(Vector3 targetPosition, StepQuerySettings settings, out float liftFraction)
+        {
+            // Prefer a gentle lift, then bring it forward until the sampled player poses fit.
+            for (int i = 0; i < 16; i++)
+            {
+                liftFraction = 1f - i / 16f;
+                if (IsPathClear(targetPosition, liftFraction, settings)) return true;
+            }
+
+            liftFraction = 0f;
+            return false;
+        }
+
+        private bool IsPathClear(Vector3 targetPosition, float liftFraction, StepQuerySettings settings)
+        {
+            for (int i = 1; i <= PathSamples; i++)
+            {
+                Vector3 position = StepMath.CalculateStepPosition(_rigidbody.position, targetPosition, _root.up, (float)i / PathSamples, liftFraction);
+                if (!IsPositionClear(position, settings, PathContactTolerance)) return false;
+            }
+
+            return !_queryCapacityExceeded;
+        }
+
+        private bool IsPositionClear(Vector3 targetRootPosition, StepQuerySettings settings, float shapeInset)
         {
             Vector3 translation = targetRootPosition - _rigidbody.position;
 
@@ -182,7 +218,7 @@ namespace LB.StepHeight
                 switch (playerCollider)
                 {
                     case CapsuleCollider capsule:
-                        GetCapsuleGeometry(capsule, translation, settings.Clearance, out Vector3 pointA,
+                        GetCapsuleGeometry(capsule, translation, shapeInset, out Vector3 pointA,
                             out Vector3 pointB, out float capsuleRadius);
                         overlapCount = OverlapCapsule(pointA, pointB, capsuleRadius, settings.QueryMask,
                             settings.TriggerInteraction);
@@ -190,14 +226,14 @@ namespace LB.StepHeight
                     case BoxCollider box:
                         Vector3 boxCenter = box.transform.TransformPoint(box.center) + translation;
                         Vector3 halfExtents = StepMath.CalculateBoxHalfExtents(box.size, box.transform.lossyScale,
-                            settings.Clearance);
+                            shapeInset);
                         overlapCount = OverlapBox(boxCenter, halfExtents, box.transform.rotation, settings.QueryMask,
                             settings.TriggerInteraction);
                         break;
                     case SphereCollider sphere:
                         Vector3 sphereCenter = sphere.transform.TransformPoint(sphere.center) + translation;
                         float sphereRadius = StepMath.CalculateSphereRadius(sphere.radius,
-                            sphere.transform.lossyScale, settings.Clearance);
+                            sphere.transform.lossyScale, shapeInset);
                         overlapCount = OverlapSphere(sphereCenter, sphereRadius, settings.QueryMask,
                             settings.TriggerInteraction);
                         break;

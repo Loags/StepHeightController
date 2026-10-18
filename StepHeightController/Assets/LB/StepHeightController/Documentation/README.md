@@ -73,15 +73,15 @@ The caller remains responsible for input, grounded checks, ordinary velocity, ju
 - **Minimum Step Height (m):** Smaller changes are treated as ground variation. Default: `0.02`.
 - **Maximum Surface Angle (degrees):** Largest angle between the candidate surface normal and player up. Default: `50`.
 - **Maximum Approach Angle (degrees):** Largest horizontal angle between movement intent and an obstacle. Default: `65`.
-- **Detection Distance (m):** Additional horizontal search reach beyond the collider bounds. Default: `0.15`.
+- **Detection Distance (m):** Additional horizontal search reach beyond the collider bounds. Default: `0.3`.
 - **Surface Probe Inset (m):** Distance beyond an obstacle face used to probe its top. Default: `0.1`.
 
 ### Movement
 
-- **Step Speed (m/s):** Maximum average Rigidbody movement speed along the accepted step path. Default: `4.5`.
+- **Step Speed (m/s):** Ascent pace, also used for forward travel when starting at rest. Moving players retain their incoming pace unless the ascent or minimum duration requires slowing. Default: `4.5`.
 - **Minimum Step Duration (s):** Lower timing bound that keeps short steps smooth without slowing consecutive stairs. Default: `0.12`.
 - **Landing Inset (m):** Distance beyond the detected obstacle face used for final placement. Default: `0.1`.
-- **Clearance (m):** Separation used for final-position overlap checks. Default: `0.02`.
+- **Probe Margin (m):** Vertical padding around the surface probe. Default: `0.02`. Player poses along the ascent use a fixed `0.001` m contact tolerance.
 
 ### Collision filtering
 
@@ -143,11 +143,11 @@ All queries consistently apply Ignored Layers and Trigger Interaction. Player co
 
 ### TryStep returns Blocked
 
-A valid top was found, but the configured player shapes do not fit at the target. Check low ceilings, side walls, unused child colliders, Landing Inset, and Clearance. Enable Scene Visualization to inspect the accepted direction and target.
+A valid top was found, but the configured player shapes do not fit along the planned ascent. Check low ceilings, side walls, unused child colliders, and Landing Inset. Enable Scene Visualization to inspect the accepted direction and target.
 
 ### The player intersects the step edge
 
-Increase Landing Inset in small increments. Surface Probe Inset controls top detection; Clearance only changes the final overlap query and does not raise the landing position.
+Increase Detection Distance to begin lifting earlier, then check Landing Inset. Surface Probe Inset controls top detection; Probe Margin pads that probe and does not raise the landing position. The ascent checks sampled player poses with a small contact tolerance.
 
 ### The player drops, jitters, or fights the step
 

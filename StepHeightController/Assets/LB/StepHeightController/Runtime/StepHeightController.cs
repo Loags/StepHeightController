@@ -19,7 +19,7 @@ namespace LB.StepHeight
         [SerializeField, Range(0f, 89f)] private float maximumSurfaceAngle = 50f;
         [FormerlySerializedAs("stepUpAngleThreshold")]
         [SerializeField, Range(0f, 180f)] private float maximumApproachAngle = 65f;
-        [SerializeField, Min(0f)] private float detectionDistance = 0.15f;
+        [SerializeField, Min(0f)] private float detectionDistance = 0.3f;
         [SerializeField, Min(0.001f)] private float surfaceProbeInset = 0.1f;
 
         [Header("Movement")]
@@ -47,6 +47,8 @@ namespace LB.StepHeight
         private StepAttemptResult _lastAttemptResult;
         private Vector3 _lastAttemptDirection;
         private Vector3 _lastTargetPosition;
+        private Vector3 _stepVelocity;
+        private float _liftFraction;
 
         /// <summary>Raised immediately after a step request is accepted.</summary>
         public event Action<StepEventData> StepStarted;
@@ -138,6 +140,8 @@ namespace LB.StepHeight
             _activeStep = new StepEventData(_rigidbody.position, candidate.TargetPosition, candidate.SurfaceCollider,
                 candidate.Height);
             _lastTargetPosition = candidate.TargetPosition;
+            _stepVelocity = Vector3.ProjectOnPlane(_rigidbody.linearVelocity, transform.up);
+            _liftFraction = candidate.LiftFraction;
             _stepCoroutine = StartCoroutine(CompleteStepMovement(_activeStep));
             StepStarted?.Invoke(_activeStep);
             return StepAttemptResult.Started;
@@ -180,40 +184,34 @@ namespace LB.StepHeight
 
         private IEnumerator CompleteStepMovement(StepEventData step)
         {
+            Vector3 up = transform.up;
             float duration = StepMath.CalculateStepDuration(step.StartPosition, step.TargetPosition, stepSpeed,
-                Mathf.Max(minimumStepDuration, Time.fixedDeltaTime));
-            float elapsed = 0f;
+                Mathf.Max(minimumStepDuration, Time.fixedDeltaTime), up, _stepVelocity.magnitude);
+            int physicsTicks = Mathf.Max(1, Mathf.CeilToInt(duration / Time.fixedDeltaTime));
             var waitForFixedUpdate = new WaitForFixedUpdate();
 
-            while (elapsed < duration)
+            for (int tick = 1; tick <= physicsTicks; tick++)
             {
-                elapsed += Time.fixedDeltaTime;
-                float progress = Mathf.Clamp01(elapsed / duration);
+                float progress = (float)tick / physicsTicks;
                 Vector3 stepPosition = StepMath.CalculateStepPosition(step.StartPosition, step.TargetPosition,
-                    transform.up, progress);
-                if (progress >= 1f && !_rigidbody.isKinematic)
-                {
-                    _rigidbody.position = stepPosition;
-                    RemoveVerticalVelocity();
-                }
-                else
-                {
-                    _rigidbody.MovePosition(stepPosition);
-                }
+                    up, progress, _liftFraction);
+                // Velocity must not advance the dynamic body a second time after MovePosition.
+                if (!_rigidbody.isKinematic) _rigidbody.linearVelocity = Vector3.zero;
+                _rigidbody.MovePosition(stepPosition);
 
                 yield return waitForFixedUpdate;
             }
 
-            RemoveVerticalVelocity();
+            RestoreMovementVelocity();
             _stepCoroutine = null;
             StepCompleted?.Invoke(step);
         }
 
-        private void RemoveVerticalVelocity()
+        private void RestoreMovementVelocity()
         {
             if (_rigidbody.isKinematic) return;
 
-            _rigidbody.linearVelocity -= Vector3.Project(_rigidbody.linearVelocity, transform.up);
+            _rigidbody.linearVelocity = _stepVelocity;
         }
 
         private bool CancelStepInternal(StepCancellationReason reason)
@@ -221,6 +219,7 @@ namespace LB.StepHeight
             if (_stepCoroutine == null) return false;
 
             StopCoroutine(_stepCoroutine);
+            RestoreMovementVelocity();
             _stepCoroutine = null;
             StepCancelled?.Invoke(_activeStep, reason);
             return true;

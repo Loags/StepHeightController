@@ -648,10 +648,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: LB.StepHeight.Runtime::LB.StepHeight.StepHeightController
   stepHeight: 0.5
-  minimumStepHeight: 0.02
+  minimumStepHeight: 0.03
   maximumSurfaceAngle: 50
   maximumApproachAngle: 65
-  detectionDistance: 0.15
+  detectionDistance: 0.3
   surfaceProbeInset: 0.1
   stepSpeed: 4.5
   minimumStepDuration: 0.12
@@ -687,8 +687,8 @@ MonoBehaviour:
   moveSpeed: 4.5
   sprintSpeed: 6.725
   groundAcceleration: 35
-  jumpVelocity: 7
-  gravityMultiplier: 1
+  jumpVelocity: 5.5
+  gravityMultiplier: 2
   lookSensitivity: 5
   pitchLimit: 65
   groundProbeDistance: 0.12
@@ -2701,7 +2701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 625c14eee3ad46c99df7c7c891ef668a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineThirdPersonFollow
-  Damping: {x: 0.06, y: 0.22, z: 0.08}
+  Damping: {x: 0.06, y: 0.22, z: 0}
   ShoulderOffset: {x: 0.4, y: 0, z: 0}
   VerticalArmLength: 0.1
   CameraSide: 1

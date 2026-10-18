@@ -37,8 +37,8 @@ namespace LB.StepHeight.Samples
         [SerializeField, Min(0f)] private float sprintSpeed = 6.725f;
         [SerializeField, Min(0f)] private float groundAcceleration = 35f;
         [FormerlySerializedAs("jumpForce")]
-        [SerializeField, Min(0f)] private float jumpVelocity = 7f;
-        [SerializeField, Min(0f)] private float gravityMultiplier = 1f;
+        [SerializeField, Min(0f)] private float jumpVelocity = 5.5f;
+        [SerializeField, Min(0f)] private float gravityMultiplier = 2f;
 
         [Header("Look")]
         [FormerlySerializedAs("lookSpeed")]
@@ -242,7 +242,7 @@ namespace LB.StepHeight.Samples
             Bounds bounds = groundCollider.bounds;
             float radius = Mathf.Max(0.01f, Mathf.Min(bounds.extents.x, bounds.extents.z) - 0.02f);
             Vector3 origin = new Vector3(bounds.center.x, bounds.min.y + radius + 0.01f, bounds.center.z);
-            return Physics.SphereCast(origin, radius, -transform.up, out _, groundProbeDistance, groundLayers, QueryTriggerInteraction.Ignore);
+            return Physics.SphereCast(origin, radius, -transform.up, out RaycastHit hit, groundProbeDistance, groundLayers, QueryTriggerInteraction.Ignore) && Vector3.Dot(hit.normal, transform.up) >= 0.5f;
         }
 
         private void OnLookPerformed(InputAction.CallbackContext context)

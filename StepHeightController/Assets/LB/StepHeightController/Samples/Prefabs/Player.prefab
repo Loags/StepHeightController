@@ -164,11 +164,14 @@ MonoBehaviour:
   groundCollider: {fileID: 8395653329589948329}
   movementOrientation: {fileID: 304190493444681752}
   viewPitchTransform: {fileID: 7554443898300626691}
+  visualRoot: {fileID: 0}
+  turnVisualToMovement: 0
+  visualTurnSpeed: 720
   moveSpeed: 4.5
   sprintSpeed: 6.725
   groundAcceleration: 35
-  jumpVelocity: 7
-  gravityMultiplier: 1
+  jumpVelocity: 5.5
+  gravityMultiplier: 2
   lookSensitivity: 5
   pitchLimit: 90
   groundProbeDistance: 0.12
@@ -188,10 +191,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepHeight: 0.5
-  minimumStepHeight: 0.02
+  minimumStepHeight: 0.03
   maximumSurfaceAngle: 50
   maximumApproachAngle: 65
-  detectionDistance: 0.15
+  detectionDistance: 0.3
   surfaceProbeInset: 0.1
   stepSpeed: 4.5
   minimumStepDuration: 0.12

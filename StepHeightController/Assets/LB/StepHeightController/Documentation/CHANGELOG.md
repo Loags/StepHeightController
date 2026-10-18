@@ -13,6 +13,9 @@
 - Explore first-person and third-person Rigidbody demos with Starter Assets visuals, Cinemachine cameras and one shared course.
 - Compare stepping on the same player, reset with one key, and jump immediately out of a step.
 - Use independent height and feel presets with detailed tuning under Advanced.
+- Keep moving forward while lifting smoothly onto steps, with clearance checks along the ascent.
+- Keep demo cameras steady while climbing, including when looking down.
+- Use a lower, weightier demo jump and front-facing signs that respect scene depth.
 
 Upgrade note: this complete release package requires Unity 6.5 or newer. The namespace and main integration API have changed. Read [UPGRADE.md](UPGRADE.md) before updating. The demos require Input System, Cinemachine, URP and Unity UI; the stepping runtime remains independent of them.
 

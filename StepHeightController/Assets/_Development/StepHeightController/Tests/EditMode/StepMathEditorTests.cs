@@ -18,7 +18,7 @@ namespace LB.StepHeight.Tests
         [Test]
         public void CalculateStepDuration_UsesDistanceAndSpeed()
         {
-            float duration = StepMath.CalculateStepDuration(Vector3.zero, Vector3.up * 0.5f, 2f, 0.02f);
+            float duration = StepMath.CalculateStepDuration(Vector3.zero, Vector3.up * 0.5f, 2f, 0.02f, Vector3.up);
 
             Assert.That(duration, Is.EqualTo(0.25f).Within(0.0001f));
         }
@@ -26,13 +26,13 @@ namespace LB.StepHeight.Tests
         [Test]
         public void CalculateStepDuration_NeverFallsBelowPhysicsDuration()
         {
-            float duration = StepMath.CalculateStepDuration(Vector3.zero, Vector3.up * 0.001f, 100f, 0.12f);
+            float duration = StepMath.CalculateStepDuration(Vector3.zero, Vector3.up * 0.001f, 100f, 0.12f, Vector3.up);
 
             Assert.That(duration, Is.EqualTo(0.12f).Within(0.0001f));
         }
 
         [Test]
-        public void CalculateStepPosition_UsesLinearHorizontalAndSmoothedVerticalProgress()
+        public void CalculateStepPosition_MovesForwardContinuouslyWhileLifting()
         {
             Vector3 position = StepMath.CalculateStepPosition(Vector3.zero, new Vector3(1f, 1f, 0f), Vector3.up,
                 0.25f);

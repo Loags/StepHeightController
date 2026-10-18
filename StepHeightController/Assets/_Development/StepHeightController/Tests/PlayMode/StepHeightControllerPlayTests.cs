@@ -350,6 +350,10 @@ namespace LB.StepHeight.Tests
 
             Assert.That(_controller.TryStep(Vector3.forward), Is.EqualTo(StepAttemptResult.Started));
             _controller.enabled = false;
+            // Repeat the same approach independently of how far the cancelled first tick lifted.
+            Rigidbody body = _player.GetComponent<Rigidbody>();
+            body.position = Vector3.zero;
+            body.MovePosition(Vector3.zero);
             _controller.enabled = true;
             yield return new WaitForFixedUpdate();
 
