@@ -14,7 +14,8 @@ namespace LB.StepHeight
         {
             Vector3 displacement = target - start;
             float liftTime = Mathf.Abs(Vector3.Dot(displacement, up.normalized)) / Mathf.Max(speed, 0.01f);
-            float travelSpeed = horizontalSpeed > 0.01f ? horizontalSpeed : speed;
+            // A slow startup tick must not dictate the pace of the entire committed step.
+            float travelSpeed = Mathf.Max(horizontalSpeed, speed);
             float travelTime = Vector3.ProjectOnPlane(displacement, up).magnitude / Mathf.Max(travelSpeed, 0.01f);
             return Mathf.Max(liftTime, Mathf.Max(travelTime, minimumDuration));
         }

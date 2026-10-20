@@ -60,7 +60,7 @@ namespace LB.StepHeight.Editor
             if (enabledChanged) _steppingDisabled.boolValue = !steppingEnabled;
 
             EditorGUILayout.PropertyField(_stepHeight, new GUIContent("Maximum Step Height (m)", "Largest vertical rise accepted as a step."));
-            EditorGUILayout.PropertyField(_stepSpeed, new GUIContent("Step Speed (m/s)", "Ascent pace. Forward travel follows the player's incoming movement speed."));
+            EditorGUILayout.PropertyField(_stepSpeed, new GUIContent("Step Speed (m/s)", "Baseline step pace. Faster incoming movement is retained when timing allows."));
             EditorGUILayout.PropertyField(_layersToIgnore, new GUIContent("Ignored Layers", "Exclude these layers from all stepping checks."));
 
             EditorGUILayout.Space();

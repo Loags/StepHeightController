@@ -14,6 +14,7 @@
 - Compare stepping on the same player, reset with one key, and jump immediately out of a step.
 - Use independent height and feel presets with detailed tuning under Advanced.
 - Keep moving forward while lifting smoothly onto steps, with clearance checks along the ascent.
+- Step up promptly when starting close to an obstacle or tapping a movement key.
 - Keep demo cameras steady while climbing, including when looking down.
 - Use a lower, weightier demo jump and front-facing signs that respect scene depth.
 

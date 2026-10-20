@@ -78,7 +78,7 @@ The caller remains responsible for input, grounded checks, ordinary velocity, ju
 
 ### Movement
 
-- **Step Speed (m/s):** Ascent pace, also used for forward travel when starting at rest. Moving players retain their incoming pace unless the ascent or minimum duration requires slowing. Default: `4.5`.
+- **Step Speed (m/s):** Baseline ascent and forward travel pace, including slow starts and brief movement taps. Faster incoming movement is retained unless the ascent or minimum duration requires slowing. Default: `4.5`.
 - **Minimum Step Duration (s):** Lower timing bound that keeps short steps smooth without slowing consecutive stairs. Default: `0.12`.
 - **Landing Inset (m):** Distance beyond the detected obstacle face used for final placement. Default: `0.1`.
 - **Probe Margin (m):** Vertical padding around the surface probe. Default: `0.02`. Player poses along the ascent use a fixed `0.001` m contact tolerance.
