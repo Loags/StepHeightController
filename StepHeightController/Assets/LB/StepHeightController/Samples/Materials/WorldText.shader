@@ -8,7 +8,7 @@ Shader "LB/Step Height/World Text"
 
     SubShader
     {
-        Tags { "Queue" = "Transparent" "RenderType" = "Transparent" "IgnoreProjector" = "True" }
+        Tags { "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent" "RenderType" = "Transparent" "IgnoreProjector" = "True" }
         Cull Back
         ZTest LEqual
         ZWrite Off
