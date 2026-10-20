@@ -5,6 +5,8 @@ namespace LB.StepHeight.Samples
     [DisallowMultipleComponent]
     public sealed class DemoAnimation : MonoBehaviour
     {
+        private const float FallGracePeriod = 0.2f;
+
         private static readonly int Speed = Animator.StringToHash("Speed");
         private static readonly int MotionSpeed = Animator.StringToHash("MotionSpeed");
         private static readonly int Grounded = Animator.StringToHash("Grounded");
@@ -18,6 +20,7 @@ namespace LB.StepHeight.Samples
 
         private Vector3 _previousPosition;
         private float _jumpHoldUntil;
+        private float _fallGraceUntil;
 
         private void Awake()
         {
@@ -30,6 +33,7 @@ namespace LB.StepHeight.Samples
             movementController.Jumped += OnJumped;
             movementController.PlayerReset += OnPlayerReset;
             _previousPosition = body.transform.position;
+            _fallGraceUntil = Time.time;
         }
 
         private void OnDisable()
@@ -46,19 +50,27 @@ namespace LB.StepHeight.Samples
             _previousPosition = position;
             bool grounded = Time.time >= _jumpHoldUntil && (stepController.IsStepping || movementController.IsGrounded());
             bool jumping = !grounded && Vector3.Dot(body.linearVelocity, body.transform.up) > 0.1f;
+            if (grounded) _fallGraceUntil = Time.time + FallGracePeriod;
+            // Brief drops keep the locomotion pose without changing physical grounding.
+            bool animationGrounded = grounded || (!jumping && Time.time < _fallGraceUntil);
             animator.SetFloat(Speed, speed, 0.1f, Time.deltaTime);
             animator.SetFloat(MotionSpeed, 1f);
-            animator.SetBool(Grounded, grounded);
+            animator.SetBool(Grounded, animationGrounded);
             animator.SetBool(Jump, jumping);
-            animator.SetBool(FreeFall, !grounded && !jumping);
+            animator.SetBool(FreeFall, !animationGrounded && !jumping);
         }
 
-        private void OnJumped() => _jumpHoldUntil = Time.time + 0.12f;
+        private void OnJumped()
+        {
+            _jumpHoldUntil = Time.time + 0.12f;
+            _fallGraceUntil = Time.time;
+        }
 
         private void OnPlayerReset(Vector3 displacement)
         {
             _previousPosition = body.transform.position;
             _jumpHoldUntil = 0f;
+            _fallGraceUntil = Time.time + FallGracePeriod;
             animator.Rebind();
             animator.SetFloat(Speed, 0f);
             animator.SetFloat(MotionSpeed, 1f);

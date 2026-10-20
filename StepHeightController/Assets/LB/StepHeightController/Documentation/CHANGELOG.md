@@ -17,6 +17,7 @@
 - Step up promptly when starting close to an obstacle or tapping a movement key.
 - Keep demo cameras steady while climbing, including when looking down.
 - Use a lower, weightier demo jump and front-facing signs that respect scene depth.
+- Keep the walking pose through brief downward steps, while jumps and longer falls use their air animations.
 
 Upgrade note: this complete release package requires Unity 6.5 or newer. The namespace and main integration API have changed. Read [UPGRADE.md](UPGRADE.md) before updating. The demos require Input System, Cinemachine, URP and Unity UI; the stepping runtime remains independent of them.
 
