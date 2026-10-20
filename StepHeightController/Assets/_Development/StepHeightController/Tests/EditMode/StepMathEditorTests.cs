@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 
-namespace LB.StepHeight.Tests
+namespace Loags.StepHeight.Tests
 {
     public sealed class StepMathEditorTests
     {

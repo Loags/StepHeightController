@@ -3,13 +3,13 @@ using System.Threading;
 using UnityEditor;
 using UnityEngine;
 
-namespace LB.StepHeight.Diagnostics
+namespace Loags.StepHeight.Diagnostics
 {
     [InitializeOnLoad]
     internal static class EditorFrameRateLimiter
     {
         private const int TargetFrameRate = 60;
-        private const string PreviousVSyncKey = "LB.StepHeight.EditorFrameRateLimiter.PreviousVSync";
+        private const string PreviousVSyncKey = "Loags.StepHeight.EditorFrameRateLimiter.PreviousVSync";
         private static double _lastUpdateTime;
 
         static EditorFrameRateLimiter()

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
 
-namespace LB.StepHeight.Diagnostics
+namespace Loags.StepHeight.Diagnostics
 {
+    [MovedFrom(true, "LB.StepHeight.Diagnostics", "LB.StepHeight.Diagnostics.Editor", null)]
     internal sealed class StepMotionDebuggerWindow : EditorWindow
     {
         private const int MaximumSamples = 1200;

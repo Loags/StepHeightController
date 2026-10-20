@@ -2,9 +2,9 @@ using NUnit.Framework.Interfaces;
 using UnityEngine;
 using UnityEngine.TestRunner;
 
-[assembly: TestRunCallback(typeof(LB.StepHeight.Tests.PlayModeTestReporter))]
+[assembly: TestRunCallback(typeof(Loags.StepHeight.Tests.PlayModeTestReporter))]
 
-namespace LB.StepHeight.Tests
+namespace Loags.StepHeight.Tests
 {
     public sealed class PlayModeTestReporter : ITestRunCallback
     {

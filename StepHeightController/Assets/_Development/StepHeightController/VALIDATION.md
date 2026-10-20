@@ -1,78 +1,32 @@
-# Validation matrix
+# Development validation
 
-## Verification record
+Customer root: `Assets/Loags/StepHeightController`. Development-only tools, tests and reports are excluded from customer exports.
 
-Validated on July 22, 2026 with Unity 6.5.2f1 and Unity 6.0.67f1:
+## Loags migration checks — October 20, 2026
 
-- Runtime, Editor, sample, and test assemblies compiled with no product-originated errors or warnings.
-- EditMode: 12/12 focused cases passed.
-- PlayMode: 20/20 focused tests passed with standard Play Mode settings.
-- Fast Enter Play Mode: 14/14 focused PlayMode tests passed with domain reload disabled before the motion-parity additions; rerun this configuration before release sign-off.
-- `StepHeightDemo` entered Play Mode with no product-originated warnings or errors under both standard and domain-reload-disabled settings.
-- Asset Store Tools current-project validation completed with every check green (manual validator run).
-- The runtime assembly has no Input System or render-pipeline reference; those dependencies remain sample-only.
-- Unity 6.0.67f1 batch validation completed with exit code 0 for the isolated release payload using Input System 1.19.0 and URP 17.0.4.
-- The Unity 6.0 batch check loaded the demo scene and player prefab with no missing scripts, resolved both sample material shaders, and reported no product-originated compiler, shader, or import findings.
+- Unity 6000.5.2f1: clean compilation, 12/12 EditMode and 20/20 PlayMode tests passed.
+- First-person and third-person demo probes: 17/17 checks passed in each scene, including enabled/disabled stations, jump/disable cancellation and reset. The local reset probe checks the immediate reset before allowing normal physics settling.
+- Both customer windows open and bind correctly. Rigidbody setup, repeat application, preservation of existing settings, Undo and independent presets passed. Customer exports have no development dependencies.
+- The archive audit passes: 85 paths/GUIDs, 65 files, only the four declared registry dependencies. All retained product GUIDs are preserved; the five retired demo assets have no remaining product references.
+- Official Asset Store validation reports no compilation errors. Its existing model-orientation advisory for the Starter Assets ramp/stairs remains; their course placement is preserved.
 
-## Automated EditMode coverage
+Unity 6000.6.0f1 combined-source validation passes with Step Height Controller added before TweenHelper: all seven product assemblies compile, all three scenes and seven prefabs have no missing scripts, and both products' customer windows open. Step demo readiness is true with Cinemachine 6.6.0, Input System 1.20.0, URP 17.6.0 and uGUI 2.6.0. TweenHelper's explicit setup enables its own dependency symbol; dependency versions, rendering and physics settings remain unchanged by adding the products.
 
-- Height boundaries.
-- Step-duration calculation and minimum physics duration.
-- Ignored-layer mask construction.
-- Direction validation.
-- Public event data integrity.
-- Minimum-duration enforcement for short step paths.
-- Linear horizontal and smoothed vertical trajectory calculation.
+Both Step demo camera smoke checks also pass in that combined project: frames advance, the live Cinemachine Brain follows player movement, orbit and reset work, the humanoid is valid, and the Console has no errors or warnings. These are focused smoke checks, not a repeat of the full movement suite on Unity 6.6.
 
-## Automated PlayMode coverage
+This is source-composition evidence, separate from archive import. Unity 6.6's missing-signature prompt prevented unattended import of the locally generated archives; neither archive import order nor the reverse source-addition order is claimed as a pass.
 
-- Supported CapsuleCollider, BoxCollider, and SphereCollider initialization.
-- Invalid direction and disabled-state results.
-- Accepted low box step.
-- Over-height rejection.
-- Ceiling/final-position blockage.
-- Ignored-layer and trigger behavior.
-- Cancellation on component disable.
-- Repeated enable/disable without retained input callbacks in runtime.
-- Smooth minimum-duration ascent, exact final placement, and immediate re-trigger rejection.
-- Landing placement beyond the detected obstacle face.
-- Immediate consecutive-step acceptance for aligned stair colliders.
-- Walkable slope rejection without repeated micro-step events.
-- Dynamic Rigidbody vertical-velocity cleanup after step completion.
-- Direct support placement and bounded settling when gravity resumes after completion.
+## Manual demo review
 
-## Development motion debugger
+Open `FirstPersonDemo` and `ThirdPersonDemo` from `Tools > StepHeightController > Setup & Demos`.
 
-Open `Tools > StepHeightController Dev > Open Motion Debugger`, select the player, and enter Play Mode.
+- Check walking, sprinting, jumping, sideways/backward approaches and smooth step ascent.
+- Compare stepping live with T and reset with R.
+- Confirm valid steps, the 0.50 m boundary, rejected height limits, narrow/standard stairs, angled approaches, blocked clearance, the slope and ignored trigger.
+- Check animations, camera stability and front-facing depth-tested signs.
 
-- Cyan Scene View segments show active step movement.
-- Orange segments show movement between accepted steps.
-- Green spheres show completed targets; yellow is active and red is cancelled.
-- Each target label records step height and the completion-to-next-start gap.
-- The window shows Rigidbody velocity, horizontal and vertical velocity, step duration, gap duration, distance and average speed travelled during the gap, and post-step drop/rise during a bounded 100 ms settling window.
-- Copy Recorded Steps exports the complete chronological trace and latest settling metrics to the system clipboard.
+## Development tools
 
-Run the focused suites from `Tools > StepHeightController Dev > Tests`: choose `Run All`, `Run EditMode`, or `Run PlayMode`.
+Use `Tools > StepHeightController Dev > Open Motion Debugger` to inspect step timing, gaps, velocity and settling. The test menu offers Run All, Run EditMode and Run PlayMode. Keep temporary captures, diagnostics and reports under ignored `ReleaseArtifacts`.
 
-The debugger and test runners are stored under `Assets/_Development` and are not part of the customer payload. Customer setup tools remain under `Tools > StepHeightController`.
-
-## Manual sample checks
-
-Open `Samples/Scenes/StepHeightDemo.unity` and verify:
-
-- 0.30 m steps and stairs are traversable.
-- 0.50 m boundary cases match configured clearance and approach.
-- 0.75 m and 1.00 m obstacles are rejected.
-- Rotated step, slope, ceiling, and trigger labels match behavior.
-- Scene Visualization is quiet when disabled and useful when enabled.
-- No product-originated warnings or errors appear after documented setup.
-
-## Compatibility checks
-
-- Minimum-version validation: Unity 6.0.67f1 with URP 17.0.4.
-- Authoring validation: Unity 6.5.2f1 with URP 17.5.0.
-- Runtime assembly compiles without Input System or render-pipeline references.
-- Sample assembly owns the Input System dependency.
-- Domain Reload disabled validation is included in the recorded focused PlayMode pass.
-
-The final clean-project import, release payload validation, and submission checks remain gates for the separate Phase 10 release task.
+Historical July validation and the pre-refactor October checks do not prove the current artifact. The old `StepHeightDemo` scene and its basic player are intentionally removed; use the current demos for maintained checks.

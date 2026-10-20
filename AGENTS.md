@@ -1,6 +1,8 @@
 # Repository Guidelines
 
 ## Project Structure & Ownership
+- For this repository, customer package content lives at `Assets/Loags/StepHeightController` inside the Unity project; this is the project-specific exception to the general `_Project` guidance. Use `Loags.StepHeight` namespaces and product-scoped assembly names.
+- Keep development-only content at `Assets/_Development/StepHeightController`, outside customer exports. Follow the repository root `PACKAGE_CONVENTIONS.md` for package coexistence, GUID preservation and explicit export boundaries.
 - Modify gameplay-related scripts, prefabs, materials, and assets inside `Assets/_Project` unless there is a clear reason to work elsewhere.
 - Treat `Assets/Plugins/` and `Assets/ThirdPartyAssets/` as external/vendor code. Do not change files there unless the task explicitly requires it, and call out such changes first.
 - Most work should stay within the `Assets/_Project` folder structure.

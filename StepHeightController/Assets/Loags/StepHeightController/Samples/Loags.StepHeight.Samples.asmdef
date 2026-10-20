@@ -1,0 +1,44 @@
+{
+    "name": "Loags.StepHeight.Samples",
+    "rootNamespace": "Loags.StepHeight.Samples",
+    "references": [
+        "Loags.StepHeight.Runtime",
+        "Unity.InputSystem",
+        "Unity.ugui",
+        "Unity.Cinemachine"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "STEPHEIGHT_INPUT_SYSTEM",
+        "STEPHEIGHT_UGUI",
+        "STEPHEIGHT_CINEMACHINE_3 || STEPHEIGHT_CINEMACHINE_66"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "[1.19.0,2.0.0)",
+            "define": "STEPHEIGHT_INPUT_SYSTEM"
+        },
+        {
+            "name": "com.unity.ugui",
+            "expression": "[2.5.0,3.0.0)",
+            "define": "STEPHEIGHT_UGUI"
+        },
+        {
+            "name": "com.unity.cinemachine",
+            "expression": "[3.1.7,4.0.0)",
+            "define": "STEPHEIGHT_CINEMACHINE_3"
+        },
+        {
+            "name": "com.unity.cinemachine",
+            "expression": "[6.6.0,6.7.0)",
+            "define": "STEPHEIGHT_CINEMACHINE_66"
+        }
+    ],
+    "noEngineReferences": false
+}

@@ -1,18 +1,6 @@
-# Step Height Controller Roadmap
+# Historical Step Height Controller roadmap
 
-## Roadmap intent
-
-This roadmap turns the current prototype into a stable, reusable Unity Asset Store tool. The work is deliberately split into a product iteration and a later release iteration:
-
-- **Current iteration:** Phases 1-9, including the rebuilt sample experience in Phase 7.
-- **Future separate task:** Phase 10, Asset Store release polish. Phase 10 remains visible for planning, but no submission, listing, marketing, licensing review, or release packaging work belongs in the current iteration.
-
-The phases are sequential unless a task is explicitly described as parallel. Each phase must leave the package compiling without warnings or errors introduced by the product before the next phase begins.
-
-## Implementation status — July 22, 2026
-
-- **Phases 1-9:** Implemented and validated in Unity 6.5.2f1, with the trimmed release payload additionally batch-validated in Unity 6.0.67f1. The recorded focused suites pass 12/12 EditMode and 20/20 PlayMode. The earlier 14/14 PlayMode suite also passed with domain reload disabled; the newer motion-parity, consecutive-stair, slope-rejection, and completion-settling cases remain to be rerun in that configuration before release sign-off. The sample Play Mode smoke checks are clean, and the Asset Store Tools engineering preflight is all green.
-- **Phase 10:** Still deferred. It remains a separate future release task and has not been started in this iteration.
+This July 2026 implementation plan is retained as history. Its phase status and validation results are historical, not current release gates. See `PACKAGE_CONVENTIONS.md`, the current package documentation and development validation record for the maintained setup.
 
 ## Product principles
 

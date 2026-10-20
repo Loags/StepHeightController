@@ -5,7 +5,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace LB.StepHeight.Tests
+namespace Loags.StepHeight.Tests
 {
     public sealed class StepHeightControllerPlayTests
     {

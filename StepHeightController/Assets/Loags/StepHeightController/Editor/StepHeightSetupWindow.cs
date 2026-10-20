@@ -1,0 +1,154 @@
+using System;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
+using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
+
+namespace Loags.StepHeight.Editor
+{
+    [MovedFrom(true, "LB.StepHeight.Editor", "LB.StepHeight.Editor", null)]
+    public sealed class StepHeightSetupWindow : EditorWindow
+    {
+        internal const string AssetRoot = "Assets/Loags/StepHeightController/";
+        private static readonly string[] PackageNames = { "com.unity.inputsystem", "com.unity.cinemachine", "com.unity.render-pipelines.universal", "com.unity.ugui" };
+        private static readonly string[] TestedVersions = { "1.19.0", "3.1.7", "17.5.0", "2.5.0" };
+        private bool _demosReady;
+
+        [MenuItem("Tools/StepHeightController/Setup & Demos", false, 0)]
+        public static void Open()
+        {
+            var window = GetWindow<StepHeightSetupWindow>();
+            window.titleContent = new GUIContent("Step Height Setup");
+            window.minSize = new Vector2(560f, 600f);
+            window.Show();
+        }
+
+        public void CreateGUI()
+        {
+            var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(AssetRoot + "Editor/StepHeightSetupWindow.uxml");
+            tree.CloneTree(rootVisualElement);
+            rootVisualElement.Q<Button>("refreshButton").clicked += RefreshStatus;
+            rootVisualElement.Q<Button>("settingsButton").clicked += () => SettingsService.OpenProjectSettings("Project/Player");
+            rootVisualElement.Q<Button>("graphicsButton").clicked += () => SettingsService.OpenProjectSettings("Project/Graphics");
+            rootVisualElement.Q<Button>("qualityButton").clicked += () => SettingsService.OpenProjectSettings("Project/Quality");
+            rootVisualElement.Q<Button>("configureButton").clicked += StepHeightPlayerSetupWindow.Open;
+            rootVisualElement.Q<Button>("documentationButton").clicked += OpenDocumentation;
+            for (int i = 0; i < PackageNames.Length; i++)
+            {
+                string packageName = PackageNames[i];
+                rootVisualElement.Q<Button>("packageButton" + i).clicked += () => UnityEditor.PackageManager.UI.Window.Open(packageName);
+            }
+
+            BindDemo("first", "FirstPersonDemo", "FirstPersonPlayer");
+            BindDemo("third", "ThirdPersonDemo", "ThirdPersonPlayer");
+            RefreshStatus();
+            // Choose the initial view once; later refreshes preserve the user's foldout choice.
+            rootVisualElement.Q<Foldout>("requirementsFoldout").SetValueWithoutNotify(!_demosReady);
+        }
+
+        private void OnFocus()
+        {
+            if (rootVisualElement.Q<Label>("statusLabel") != null) RefreshStatus();
+        }
+
+        private void BindDemo(string prefix, string sceneName, string prefabName)
+        {
+            rootVisualElement.Q<Button>(prefix + "SceneButton").clicked += () => OpenDemo(sceneName);
+            rootVisualElement.Q<Button>(prefix + "SelectButton").clicked += () => SelectPrefab(prefabName);
+            rootVisualElement.Q<Button>(prefix + "AddButton").clicked += () => AddPrefab(prefabName);
+        }
+
+        private void RefreshStatus()
+        {
+            var packages = UnityEditor.PackageManager.PackageInfo.GetAllRegisteredPackages();
+            bool packagesReady = true;
+            bool editing = !EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isCompiling && !EditorApplication.isUpdating;
+            for (int i = 0; i < PackageNames.Length; i++)
+            {
+                var package = packages.FirstOrDefault(item => item.name == PackageNames[i]);
+                var tested = new Version(TestedVersions[i]);
+                bool ready = package != null && Version.TryParse(package.version.Split('-')[0], out Version installed) && IsCompatiblePackageVersion(PackageNames[i], installed, tested);
+                packagesReady &= ready;
+                Label status = rootVisualElement.Q<Label>("packageStatus" + i);
+                string testedVersions = PackageNames[i] == "com.unity.cinemachine" ? "3.1.7 / 6.6.0" : TestedVersions[i];
+                SetStatus(status, ready, ready ? "Ready" : package == null ? "Not installed · tested " + testedVersions : "Choose a compatible version");
+                string compatibility = PackageNames[i] == "com.unity.cinemachine" ? "Use 3.x from 3.1.7 or 6.6.x from 6.6.0." : "Use this version or a newer compatible release in the same major version.";
+                status.tooltip = "Installed: " + (package == null ? "none" : package.version) + ". Tested: " + testedVersions + ". " + compatibility;
+                rootVisualElement.Q<Button>("packageButton" + i).SetEnabled(editing);
+            }
+
+            bool urpActive = GraphicsSettings.currentRenderPipeline != null && GraphicsSettings.currentRenderPipeline.GetType().Name.Contains("Universal");
+            bool inputReady = InputSystemEnabled();
+            bool readyForDemos = packagesReady && urpActive && inputReady;
+            _demosReady = readyForDemos;
+            rootVisualElement.Q<Label>("settingsStatus").text = (urpActive ? "Rendering: ready." : "Choose a Universal RP asset in Graphics and Quality settings.") + "\n" +
+                (inputReady ? "Input: ready." : "In Player settings, choose Input System (New) or Both. Restart if asked.");
+            SetStatus(rootVisualElement.Q<Label>("statusLabel"), readyForDemos, readyForDemos ? "Demos ready. Open one and press Play." : "Complete the demo setup below, then check again.");
+            foreach (string prefix in new[] { "first", "third" })
+            {
+                string sceneName = prefix == "first" ? "FirstPersonDemo" : "ThirdPersonDemo";
+                string prefabName = prefix == "first" ? "FirstPersonPlayer" : "ThirdPersonPlayer";
+                bool sceneExists = AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetRoot + "Samples/Scenes/" + sceneName + ".unity") != null;
+                bool prefabExists = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath(prefabName)) != null;
+                rootVisualElement.Q<Button>(prefix + "SceneButton").SetEnabled(editing && readyForDemos && sceneExists);
+                rootVisualElement.Q<Button>(prefix + "SelectButton").SetEnabled(prefabExists);
+                rootVisualElement.Q<Button>(prefix + "AddButton").SetEnabled(editing && readyForDemos && prefabExists);
+            }
+
+            rootVisualElement.Q<Button>("configureButton").SetEnabled(editing);
+            rootVisualElement.Q<Label>("demoHint").text = "Use one active player and camera rig per scene.";
+        }
+
+        private static bool IsCompatiblePackageVersion(string packageName, Version installed, Version tested)
+        {
+            // Unity 6.6's Cinemachine release retains the demo camera API.
+            if (packageName == "com.unity.cinemachine" && installed.Major == 6 && installed.Minor == 6) return installed >= new Version(6, 6, 0);
+            return installed.Major == tested.Major && installed >= tested;
+        }
+
+        private static void SetStatus(Label label, bool ready, string text)
+        {
+            label.text = text;
+            label.EnableInClassList("status-ready", ready);
+            label.EnableInClassList("status-action", !ready);
+        }
+
+        private static bool InputSystemEnabled()
+        {
+#if ENABLE_INPUT_SYSTEM
+            return true;
+#else
+            return false;
+#endif
+        }
+
+        private static string PrefabPath(string name) => AssetRoot + "Samples/Prefabs/" + name + ".prefab";
+
+        private static void OpenDemo(string name)
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode || !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            EditorSceneManager.OpenScene(AssetRoot + "Samples/Scenes/" + name + ".unity");
+        }
+
+        private static void SelectPrefab(string name)
+        {
+            Selection.activeObject = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath(name));
+            EditorGUIUtility.PingObject(Selection.activeObject);
+        }
+
+        private static void AddPrefab(string name)
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode) return;
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath(name));
+            var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, SceneManager.GetActiveScene());
+            Undo.RegisterCreatedObjectUndo(instance, "Add demo player");
+            Selection.activeGameObject = instance;
+        }
+
+        internal static void OpenDocumentation() => AssetDatabase.OpenAsset(AssetDatabase.LoadAssetAtPath<TextAsset>(AssetRoot + "Documentation/Setup.md"));
+    }
+}

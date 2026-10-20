@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEditor.TestTools.TestRunner.Api;
 using UnityEngine;
 
-namespace LB.StepHeight.Tests
+namespace Loags.StepHeight.Tests
 {
     internal static class StepHeightTestRunner
     {
@@ -13,16 +13,16 @@ namespace LB.StepHeight.Tests
         [MenuItem(MenuPath, false, 20)]
         private static void RunFocusedTests()
         {
-            RunTests(TestMode.EditMode, "LB.StepHeight.Tests.EditMode", true);
+            RunTests(TestMode.EditMode, "Loags.StepHeight.Tests.EditMode", true);
         }
 
         [MenuItem(EditModeMenuPath, false, 21)]
         private static void RunFocusedEditModeTests() =>
-            RunTests(TestMode.EditMode, "LB.StepHeight.Tests.EditMode", false);
+            RunTests(TestMode.EditMode, "Loags.StepHeight.Tests.EditMode", false);
 
         [MenuItem(PlayModeMenuPath, false, 22)]
         private static void RunFocusedPlayModeTests() =>
-            RunTests(TestMode.PlayMode, "LB.StepHeight.Tests.PlayMode", false);
+            RunTests(TestMode.PlayMode, "Loags.StepHeight.Tests.PlayMode", false);
 
         private static void RunTests(TestMode testMode, string assemblyName, bool runPlayModeAfter)
         {
@@ -58,7 +58,7 @@ namespace LB.StepHeight.Tests
                 if (_runPlayModeAfter)
                 {
                     EditorApplication.delayCall += () =>
-                        RunTests(TestMode.PlayMode, "LB.StepHeight.Tests.PlayMode", false);
+                        RunTests(TestMode.PlayMode, "Loags.StepHeight.Tests.PlayMode", false);
                 }
             }
 
