@@ -20,7 +20,7 @@ namespace LB.StepHeight.Editor
         {
             var window = GetWindow<StepHeightPlayerSetupWindow>();
             window.titleContent = new GUIContent("Configure Rigidbody Player");
-            window.minSize = new Vector2(480f, 430f);
+            window.minSize = new Vector2(520f, 600f);
             window.Show();
         }
 
@@ -37,7 +37,7 @@ namespace LB.StepHeight.Editor
         {
             var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(StepHeightSetupWindow.AssetRoot + "Editor/StepHeightPlayerSetupWindow.uxml");
             tree.CloneTree(rootVisualElement);
-            _playerField = new ObjectField("Player root") { objectType = typeof(GameObject), allowSceneObjects = true };
+            _playerField = new ObjectField("Player") { objectType = typeof(GameObject), allowSceneObjects = true, tooltip = "Choose the object in your scene that holds the player's Rigidbody." };
             _playerField.AddToClassList("player-field");
             rootVisualElement.Q<VisualElement>("playerFieldContainer").Add(_playerField);
             _smoothMovement = rootVisualElement.Q<Toggle>("smoothMovement");
@@ -75,20 +75,20 @@ namespace LB.StepHeight.Editor
 
             if (player == null || EditorUtility.IsPersistent(player) || !player.scene.IsValid() || EditorSceneManager.IsPreviewScene(player.scene))
             {
-                reason = "Choose your player root in an open scene, with its Rigidbody on the same object.";
+                reason = "Choose a player from the open scene. Select the object that holds its Rigidbody.";
                 return false;
             }
 
             if (player.GetComponentInChildren<CharacterController>(true) != null)
             {
-                reason = "CharacterController players are unsupported. Choose a Rigidbody player.";
+                reason = "This player uses CharacterController. Choose a Rigidbody-based player.";
                 return false;
             }
 
             Rigidbody body = player.GetComponent<Rigidbody>();
             if (body == null || body.isKinematic)
             {
-                reason = "This player needs a non-kinematic Rigidbody on the selected root.";
+                reason = "Select the object with a Rigidbody and turn off Is Kinematic.";
                 return false;
             }
 
@@ -117,26 +117,30 @@ namespace LB.StepHeight.Editor
         private List<string> PlannedChanges(GameObject player)
         {
             var changes = new List<string>();
-            if (player.GetComponent<StepHeightController>() == null) changes.Add("Add Step Height Controller with balanced defaults.");
+            if (player.GetComponent<StepHeightController>() == null) changes.Add("Add Step Height Controller.");
             Rigidbody body = player.GetComponent<Rigidbody>();
-            if (_smoothMovement.value && body.interpolation != RigidbodyInterpolation.Interpolate) changes.Add("Set Rigidbody interpolation to Interpolate.");
+            if (_smoothMovement.value && body.interpolation != RigidbodyInterpolation.Interpolate) changes.Add("Smooth movement with interpolation.");
             const RigidbodyConstraints upright = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-            if (_keepUpright.value && (body.constraints & upright) != upright) changes.Add("Freeze Rigidbody rotation on X and Z; keep other constraints.");
+            if (_keepUpright.value && (body.constraints & upright) != upright) changes.Add("Keep the player upright (lock X/Z rotation).");
             return changes;
         }
 
         private void RefreshPreview()
         {
             var player = _playerField.value as GameObject;
+            _preview.RemoveFromClassList("status-ready");
+            _preview.RemoveFromClassList("status-action");
             if (!CanConfigure(player, out string reason))
             {
                 _preview.text = reason;
+                _preview.AddToClassList("status-action");
                 _applyButton.SetEnabled(false);
                 return;
             }
 
             List<string> changes = PlannedChanges(player);
-            _preview.text = changes.Count == 0 ? "Already configured. No changes needed." : "Changes to “" + player.name + "”:\n• " + string.Join("\n• ", changes);
+            _preview.text = changes.Count == 0 ? "Component settings are ready. No changes to apply." : "Changes to “" + player.name + "”:\n• " + string.Join("\n• ", changes);
+            _preview.EnableInClassList("status-ready", changes.Count == 0);
             _applyButton.SetEnabled(changes.Count > 0);
         }
 

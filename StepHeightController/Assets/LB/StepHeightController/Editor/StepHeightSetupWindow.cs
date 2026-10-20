@@ -21,7 +21,7 @@ namespace LB.StepHeight.Editor
         {
             var window = GetWindow<StepHeightSetupWindow>();
             window.titleContent = new GUIContent("Step Height Setup");
-            window.minSize = new Vector2(500f, 600f);
+            window.minSize = new Vector2(560f, 600f);
             window.Show();
         }
 
@@ -64,6 +64,7 @@ namespace LB.StepHeight.Editor
         {
             var packages = UnityEditor.PackageManager.PackageInfo.GetAllRegisteredPackages();
             bool packagesReady = true;
+            bool editing = !EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isCompiling && !EditorApplication.isUpdating;
             for (int i = 0; i < PackageNames.Length; i++)
             {
                 var package = packages.FirstOrDefault(item => item.name == PackageNames[i]);
@@ -71,17 +72,18 @@ namespace LB.StepHeight.Editor
                 bool ready = package != null && Version.TryParse(package.version.Split('-')[0], out Version installed) && installed.Major == tested.Major && installed >= tested;
                 packagesReady &= ready;
                 Label status = rootVisualElement.Q<Label>("packageStatus" + i);
-                status.text = package == null ? "Not installed. Tested: " + TestedVersions[i] : "Installed: " + package.version + ". Tested: " + TestedVersions[i] + (ready ? string.Empty : " — choose a compatible version");
-                status.EnableInClassList("needs-action", !ready);
+                SetStatus(status, ready, ready ? "Ready" : package == null ? "Not installed · tested " + TestedVersions[i] : "Choose a compatible version");
+                status.tooltip = "Installed: " + (package == null ? "none" : package.version) + ". Tested: " + TestedVersions[i] + ". Use this version or a newer compatible release in the same major version.";
+                rootVisualElement.Q<Button>("packageButton" + i).SetEnabled(editing);
             }
 
             bool urpActive = GraphicsSettings.currentRenderPipeline != null && GraphicsSettings.currentRenderPipeline.GetType().Name.Contains("Universal");
             bool inputReady = InputSystemEnabled();
             bool readyForDemos = packagesReady && urpActive && inputReady;
             _demosReady = readyForDemos;
-            rootVisualElement.Q<Label>("settingsStatus").text = "Render pipeline: " + (urpActive ? "Universal RP active" : "select a Universal RP asset in Graphics/Quality settings") + ".\nInput: " + (inputReady ? "Input System enabled" : "choose Input System (New) or Both in Player > Other Settings; restart if prompted") + ".";
-            rootVisualElement.Q<Label>("statusLabel").text = readyForDemos ? "Ready to explore the demos." : "Complete the demo requirements below, then refresh.";
-            bool editing = !EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isCompiling && !EditorApplication.isUpdating;
+            rootVisualElement.Q<Label>("settingsStatus").text = (urpActive ? "Rendering: ready." : "Choose a Universal RP asset in Graphics and Quality settings.") + "\n" +
+                (inputReady ? "Input: ready." : "In Player settings, choose Input System (New) or Both. Restart if asked.");
+            SetStatus(rootVisualElement.Q<Label>("statusLabel"), readyForDemos, readyForDemos ? "Demos ready. Open one and press Play." : "Complete the demo setup below, then check again.");
             foreach (string prefix in new[] { "first", "third" })
             {
                 string sceneName = prefix == "first" ? "FirstPersonDemo" : "ThirdPersonDemo";
@@ -94,7 +96,14 @@ namespace LB.StepHeight.Editor
             }
 
             rootVisualElement.Q<Button>("configureButton").SetEnabled(editing);
-            rootVisualElement.Q<Label>("demoHint").text = "Open a demo and press Play. Adding a player creates a prefab instance in your active scene; keep one active player and camera rig.";
+            rootVisualElement.Q<Label>("demoHint").text = "Use one active player and camera rig per scene.";
+        }
+
+        private static void SetStatus(Label label, bool ready, string text)
+        {
+            label.text = text;
+            label.EnableInClassList("status-ready", ready);
+            label.EnableInClassList("status-action", !ready);
         }
 
         private static bool InputSystemEnabled()

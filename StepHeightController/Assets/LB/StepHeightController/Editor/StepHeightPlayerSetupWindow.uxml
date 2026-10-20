@@ -1,22 +1,45 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:Style src="StepHeightSetupWindow.uss" />
-    <ui:ScrollView class="setup-root">
-        <ui:Label text="Configure your Rigidbody player" class="setup-title" />
-        <ui:Label text="Keep your current movement, input and camera. This tool only makes the changes listed in the preview." class="setup-copy" />
-        <ui:VisualElement name="playerFieldContainer" />
-        <ui:VisualElement class="setup-row">
-            <ui:Button name="selectionButton" text="Use selected object" />
-            <ui:Button name="refreshButton" text="Refresh preview" />
-        </ui:VisualElement>
-        <ui:Label text="Optional Rigidbody adjustments" class="setup-section" />
-        <ui:Toggle name="smoothMovement" label="Smooth movement with Rigidbody interpolation" />
-        <ui:Toggle name="keepUpright" label="Keep the Rigidbody upright (freeze X/Z rotation)" />
-        <ui:Label text="Preview" class="setup-section" />
-        <ui:Label name="previewLabel" class="setup-copy" />
-        <ui:Button name="applyButton" text="Apply listed changes" />
-        <ui:Label text="Connect your movement loop" class="setup-section" />
-        <ui:Label text="Your movement controller must request steps with TryStep while grounded and moving, and pause its horizontal velocity writes during a step. Setup does not rewrite scripts. See the quick start for the small integration example." class="setup-copy" />
-        <ui:Label text="Apply supports Undo. Save your scene when you are happy with the result." class="setup-copy" />
-        <ui:Button name="documentationButton" text="Open quick start" />
-    </ui:ScrollView>
+    <ui:VisualElement class="window-root">
+        <ui:ScrollView class="window-scroll">
+            <ui:VisualElement class="hero-card">
+                <ui:VisualElement class="step-mark" picking-mode="Ignore">
+                    <ui:VisualElement class="step-bar step-low" />
+                    <ui:VisualElement class="step-bar step-mid" />
+                    <ui:VisualElement class="step-bar step-high" />
+                </ui:VisualElement>
+                <ui:VisualElement class="hero-copy">
+                    <ui:Label text="YOUR RIGIDBODY PLAYER" class="eyebrow" />
+                    <ui:Label text="Add smooth stepping" class="hero-title" />
+                    <ui:Label text="Choose a player. Review the changes. Apply when ready." class="description" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="section-card">
+                <ui:Label text="1. Choose your player" class="section-title" />
+                <ui:Label text="Select the player object in your scene, then use it below." class="description" />
+                <ui:VisualElement name="playerFieldContainer" />
+                <ui:VisualElement class="button-row">
+                    <ui:Button name="selectionButton" text="Use selected object" class="secondary-button" />
+                    <ui:Button name="refreshButton" text="Check again" class="secondary-button" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="section-card">
+                <ui:Label text="2. Choose adjustments" class="section-title" />
+                <ui:Label text="Optional improvements to Rigidbody motion." class="description" />
+                <ui:Toggle name="smoothMovement" text="Smooth visual movement" class="setup-toggle" tooltip="Enable Rigidbody interpolation to smooth movement between physics updates." />
+                <ui:Toggle name="keepUpright" text="Keep the player upright" class="setup-toggle" tooltip="Freeze Rigidbody rotation on X and Z. Existing constraints are preserved." />
+            </ui:VisualElement>
+            <ui:VisualElement class="section-card">
+                <ui:Label text="3. Review &amp; apply" class="section-title" />
+                <ui:Label name="previewLabel" class="description preview-panel" />
+                <ui:Button name="applyButton" text="Apply changes" class="primary-button" />
+                <ui:Label text="Supports Undo. Save your scene when you're happy." class="hint" />
+            </ui:VisualElement>
+            <ui:VisualElement class="section-card">
+                <ui:Label text="Finish the movement connection" class="step-title" />
+                <ui:Label text="Follow the quick start to connect your movement script. Your input and camera setup stay in place." class="description" />
+                <ui:Button name="documentationButton" text="Open quick start" class="link-button" />
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
 </ui:UXML>

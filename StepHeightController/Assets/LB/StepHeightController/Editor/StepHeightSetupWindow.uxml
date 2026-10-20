@@ -1,50 +1,100 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:Style src="StepHeightSetupWindow.uss" />
-    <ui:ScrollView class="setup-root">
-        <ui:Label text="Step Height Controller" class="setup-title" />
-        <ui:Label text="Smooth steps for Rigidbody players. Start with a demo, or configure your own player." class="setup-copy" />
-        <ui:Label name="statusLabel" class="setup-copy" />
-        <ui:VisualElement class="setup-row">
-            <ui:Button name="refreshButton" text="Refresh" />
-            <ui:Button name="documentationButton" text="Quick start" />
-        </ui:VisualElement>
-        <ui:Foldout name="requirementsFoldout" text="Demo requirements">
-            <ui:Label text="Demo packages only; stepping needs Unity physics. Open each package and choose Install or Update." class="setup-copy" />
-            <ui:Label text="Input System" class="package-name" />
-            <ui:Label name="packageStatus0" class="setup-copy" />
-            <ui:Button name="packageButton0" text="Open Input System in Package Manager" />
-            <ui:Label text="Cinemachine" class="package-name" />
-            <ui:Label name="packageStatus1" class="setup-copy" />
-            <ui:Button name="packageButton1" text="Open Cinemachine in Package Manager" />
-            <ui:Label text="Universal RP" class="package-name" />
-            <ui:Label name="packageStatus2" class="setup-copy" />
-            <ui:Button name="packageButton2" text="Open Universal RP in Package Manager" />
-            <ui:Label text="Unity UI" class="package-name" />
-            <ui:Label name="packageStatus3" class="setup-copy" />
-            <ui:Button name="packageButton3" text="Open Unity UI in Package Manager" />
-            <ui:Label name="settingsStatus" class="setup-copy" />
-            <ui:Label text="Create a pipeline via Create > Rendering > URP Asset (with Universal Renderer). Assign it in Graphics; match or clear Quality overrides (see Quick start)." class="setup-copy" />
-            <ui:VisualElement class="setup-row">
-                <ui:Button name="graphicsButton" text="Open Graphics" />
-                <ui:Button name="qualityButton" text="Open Quality" />
-                <ui:Button name="settingsButton" text="Open Player Settings" />
+    <ui:VisualElement class="window-root">
+        <ui:ScrollView class="window-scroll">
+            <ui:VisualElement class="hero-card">
+                <ui:VisualElement class="step-mark" picking-mode="Ignore">
+                    <ui:VisualElement class="step-bar step-low" />
+                    <ui:VisualElement class="step-bar step-mid" />
+                    <ui:VisualElement class="step-bar step-high" />
+                </ui:VisualElement>
+                <ui:VisualElement class="hero-copy">
+                    <ui:Label text="SETUP &amp; DEMOS" class="eyebrow" />
+                    <ui:Label text="Step Height Controller" class="hero-title" />
+                    <ui:Label text="Explore the demos or set up your player." class="description" />
+                </ui:VisualElement>
             </ui:VisualElement>
-        </ui:Foldout>
-        <ui:Label text="Try the demos" class="setup-section" />
-        <ui:Label text="Rigidbody demos using Starter Assets visuals. Keyboard and mouse only." class="setup-copy" />
-        <ui:VisualElement class="setup-row">
-            <ui:Button name="firstSceneButton" text="Open first-person demo" />
-            <ui:Button name="firstSelectButton" text="Select player prefab" />
-            <ui:Button name="firstAddButton" text="Add first-person player" />
-        </ui:VisualElement>
-        <ui:VisualElement class="setup-row">
-            <ui:Button name="thirdSceneButton" text="Open third-person demo" />
-            <ui:Button name="thirdSelectButton" text="Select player prefab" />
-            <ui:Button name="thirdAddButton" text="Add third-person player" />
-        </ui:VisualElement>
-        <ui:Label name="demoHint" class="setup-copy" />
-        <ui:Label text="Use your own player" class="setup-section" />
-        <ui:Label text="Add stepping to a supported Rigidbody player. Keep your existing movement, input and camera; connect your movement loop using the quick start." class="setup-copy" />
-        <ui:Button name="configureButton" text="Configure Rigidbody Player…" />
-    </ui:ScrollView>
+            <ui:VisualElement class="section-card">
+                <ui:VisualElement class="heading-row">
+                    <ui:Label text="Let's get set up" class="section-title" />
+                    <ui:Button name="refreshButton" text="Check again" class="secondary-button" />
+                </ui:VisualElement>
+                <ui:Label name="statusLabel" class="description status-label" />
+                <ui:Foldout name="requirementsFoldout" text="Demo setup" class="requirements">
+                    <ui:Label text="1. Install the demo packages" class="step-title" />
+                    <ui:Label text="Open each package, then choose Install or Update. These packages are only needed for the demos." class="description" />
+                    <ui:VisualElement class="package-row">
+                        <ui:VisualElement class="package-copy">
+                            <ui:Label text="Input System" class="package-name" />
+                            <ui:Label name="packageStatus0" class="description" />
+                        </ui:VisualElement>
+                        <ui:Button name="packageButton0" text="Open package" class="link-button" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="package-row">
+                        <ui:VisualElement class="package-copy">
+                            <ui:Label text="Cinemachine" class="package-name" />
+                            <ui:Label name="packageStatus1" class="description" />
+                        </ui:VisualElement>
+                        <ui:Button name="packageButton1" text="Open package" class="link-button" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="package-row">
+                        <ui:VisualElement class="package-copy">
+                            <ui:Label text="Universal RP" class="package-name" />
+                            <ui:Label name="packageStatus2" class="description" />
+                        </ui:VisualElement>
+                        <ui:Button name="packageButton2" text="Open package" class="link-button" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="package-row">
+                        <ui:VisualElement class="package-copy">
+                            <ui:Label text="Unity UI" class="package-name" />
+                            <ui:Label name="packageStatus3" class="description" />
+                        </ui:VisualElement>
+                        <ui:Button name="packageButton3" text="Open package" class="link-button" />
+                    </ui:VisualElement>
+                    <ui:Label text="2. Check your project settings" class="step-title settings-heading" />
+                    <ui:Label name="settingsStatus" class="description" />
+                    <ui:VisualElement class="button-row">
+                        <ui:Button name="graphicsButton" text="Graphics" class="secondary-button" />
+                        <ui:Button name="qualityButton" text="Quality" class="secondary-button" />
+                        <ui:Button name="settingsButton" text="Player settings" class="secondary-button" />
+                    </ui:VisualElement>
+                    <ui:Label text="The quick start walks you through these settings." class="hint" />
+                </ui:Foldout>
+            </ui:VisualElement>
+            <ui:VisualElement class="section-card">
+                <ui:Label text="Try a demo" class="section-title" />
+                <ui:Label text="Rigidbody movement with Starter Assets visuals. Keyboard and mouse." class="description" />
+                <ui:VisualElement class="demo-row">
+                    <ui:VisualElement class="demo-card">
+                        <ui:Label text="First person" class="step-title" />
+                        <ui:Label text="See each step through the player's eyes." class="description demo-description" />
+                        <ui:Button name="firstSceneButton" text="Open demo" class="primary-button" />
+                        <ui:VisualElement class="button-row">
+                            <ui:Button name="firstSelectButton" text="Find player" class="secondary-button" tooltip="Select the ready-to-play first-person prefab." />
+                            <ui:Button name="firstAddButton" text="Add to scene" class="secondary-button" tooltip="Add a first-person player and camera to the open scene. Keep one active player." />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="demo-card">
+                        <ui:Label text="Third person" class="step-title" />
+                        <ui:Label text="Follow your character across the same course." class="description demo-description" />
+                        <ui:Button name="thirdSceneButton" text="Open demo" class="primary-button" />
+                        <ui:VisualElement class="button-row">
+                            <ui:Button name="thirdSelectButton" text="Find player" class="secondary-button" tooltip="Select the ready-to-play third-person prefab." />
+                            <ui:Button name="thirdAddButton" text="Add to scene" class="secondary-button" tooltip="Add a third-person player and camera to the open scene. Keep one active player." />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label name="demoHint" class="hint" />
+                <ui:Label text="WASD move · Mouse look · Space jump · T compare · R reset" class="controls" />
+            </ui:VisualElement>
+            <ui:VisualElement class="section-card">
+                <ui:Label text="Bring your own player" class="section-title" />
+                <ui:Label text="Add stepping to an existing Rigidbody player. A small movement-script connection is required; the quick start shows how." class="description" />
+                <ui:VisualElement class="button-row">
+                    <ui:Button name="configureButton" text="Set up my player" class="primary-button" />
+                    <ui:Button name="documentationButton" text="Quick start" class="secondary-button" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
 </ui:UXML>

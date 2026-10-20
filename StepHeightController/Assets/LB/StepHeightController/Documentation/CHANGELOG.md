@@ -10,6 +10,7 @@
 - Use clearer setup feedback, scene visualization and offline documentation.
 - Use a URP-compatible sample player material.
 - Start with guided dependency checks and a reversible Rigidbody player setup window.
+- Use styled setup cards, clear readiness messages and a three-step player setup flow.
 - Explore first-person and third-person Rigidbody demos with Starter Assets visuals, Cinemachine cameras and one shared course.
 - Compare stepping on the same player, reset with one key, and jump immediately out of a step.
 - Use independent height and feel presets with detailed tuning under Advanced.
