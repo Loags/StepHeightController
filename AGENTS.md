@@ -126,7 +126,9 @@ private string GetLabel() => _label.text;
 - If Unity MCP is unavailable or insufficient, explain what could not be checked and ask before falling back to a batch build.
 
 ## Commit Messages
-- After completing code or asset changes, always include a suggested Conventional Commit message in the final response unless the user explicitly asks not to.
+- After completing and validating repository changes, always commit and push them to the current branch's configured remote unless the user explicitly asks otherwise.
+- Review the whole worktree before committing. Include only intended repository changes; keep temporary debugging scripts, reports, and other local-only files out of commits.
+- Use Conventional Commit messages and report the commit hash and push result in the final response.
 
 Summary
 The Conventional Commits specification is a lightweight convention on top of commit messages. It provides an easy set of rules for creating an explicit commit history; which makes it easier to write automated tools on top of. This convention dovetails with SemVer, by describing the features, fixes, and breaking changes made in commit messages.
