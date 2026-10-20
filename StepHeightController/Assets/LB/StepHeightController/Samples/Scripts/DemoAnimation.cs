@@ -5,7 +5,7 @@ namespace LB.StepHeight.Samples
     [DisallowMultipleComponent]
     public sealed class DemoAnimation : MonoBehaviour
     {
-        private const float FallGracePeriod = 0.2f;
+        private const float FallGracePeriod = 0.1f;
 
         private static readonly int Speed = Animator.StringToHash("Speed");
         private static readonly int MotionSpeed = Animator.StringToHash("MotionSpeed");
