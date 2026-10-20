@@ -687,7 +687,7 @@ MonoBehaviour:
   moveSpeed: 4.5
   sprintSpeed: 6.725
   groundAcceleration: 35
-  jumpVelocity: 5.5
+  jumpVelocity: 8.15
   gravityMultiplier: 2
   lookSensitivity: 5
   pitchLimit: 65

@@ -37,7 +37,7 @@ namespace LB.StepHeight.Samples
         [SerializeField, Min(0f)] private float sprintSpeed = 6.725f;
         [SerializeField, Min(0f)] private float groundAcceleration = 35f;
         [FormerlySerializedAs("jumpForce")]
-        [SerializeField, Min(0f)] private float jumpVelocity = 5.5f;
+        [SerializeField, Min(0f)] private float jumpVelocity = 8.15f;
         [SerializeField, Min(0f)] private float gravityMultiplier = 2f;
 
         [Header("Look")]
