@@ -43,7 +43,7 @@ Validated on July 22, 2026 with Unity 6.5.2f1 and Unity 6.0.67f1:
 
 ## Development motion debugger
 
-Open `Tools > Step Height Controller > Open Motion Debugger`, select the player, and enter Play Mode.
+Open `Tools > StepHeightController Dev > Open Motion Debugger`, select the player, and enter Play Mode.
 
 - Cyan Scene View segments show active step movement.
 - Orange segments show movement between accepted steps.
@@ -52,7 +52,9 @@ Open `Tools > Step Height Controller > Open Motion Debugger`, select the player,
 - The window shows Rigidbody velocity, horizontal and vertical velocity, step duration, gap duration, distance and average speed travelled during the gap, and post-step drop/rise during a bounded 100 ms settling window.
 - Copy Recorded Steps exports the complete chronological trace and latest settling metrics to the system clipboard.
 
-The debugger is stored under `Assets/_Development` and is not part of the customer payload.
+Run the focused suites from `Tools > StepHeightController Dev > Tests`: choose `Run All`, `Run EditMode`, or `Run PlayMode`.
+
+The debugger and test runners are stored under `Assets/_Development` and are not part of the customer payload. Customer setup tools remain under `Tools > StepHeightController`.
 
 ## Manual sample checks
 

@@ -10,7 +10,7 @@ The runtime does not read input. The included first-person and third-person Rigi
 - Unity Physics (`com.unity.modules.physics`).
 - A Rigidbody and at least one enabled, non-trigger CapsuleCollider, BoxCollider, or SphereCollider in the player hierarchy.
 - A movement controller that can call the stepping API from its physics loop.
-- Open **Tools > Step Height Controller > Setup & Demos** to check demo packages, open Package Manager, and follow the render-pipeline and input settings guidance. Missing demo dependencies disable the sample assembly; the stepping runtime and setup windows remain available.
+- Open **Tools > StepHeightController > Setup & Demos** to check demo packages, open Package Manager, and follow the render-pipeline and input settings guidance. Missing demo dependencies disable the sample assembly; the stepping runtime and setup windows remain available.
 - The runtime assembly itself has no Input System or render-pipeline dependency. Earlier runtime/sample checks used Unity 6.0.67f1 with URP 17.0.4, but this exact release archive is not prepared or verified as a Unity 6.0 import.
 
 ## Package layout
@@ -27,7 +27,7 @@ Assets/LB/StepHeightController/
 
 Updating from 1.0.0? Read [Upgrading to 2.0](UPGRADE.md) before importing into an existing project.
 
-For a guided start, open **Tools > Step Height Controller > Setup & Demos** and follow the [quick start](Setup.md). **Configure Rigidbody Player** previews reversible component and physics changes. Your existing movement script remains responsible for calling the stepping API.
+For a guided start, open **Tools > StepHeightController > Setup & Demos** and follow the [quick start](Setup.md). **Configure Rigidbody Player** previews reversible component and physics changes. Your existing movement script remains responsible for calling the stepping API.
 
 1. Add a Rigidbody to the player root.
 2. Add a CapsuleCollider, BoxCollider, or SphereCollider to the root or a child.

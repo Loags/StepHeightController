@@ -1,6 +1,6 @@
 # Quick start
 
-Open **Tools > Step Height Controller > Setup & Demos**.
+Open **Tools > StepHeightController > Setup & Demos**.
 
 1. Open each missing demo dependency in Package Manager and choose Install. Tested versions are shown beside the installed versions.
 2. Use Universal RP for the demos. If you need an asset, right-click in the Project window and choose **Create > Rendering > URP Asset (with Universal Renderer)**. Open **Graphics** from the setup window and assign it as **Default Render Pipeline**. Open **Quality** and assign the same asset for the quality levels you use, or clear their override to use the Graphics default.

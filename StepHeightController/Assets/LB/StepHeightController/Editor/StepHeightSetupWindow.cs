@@ -16,7 +16,7 @@ namespace LB.StepHeight.Editor
         private static readonly string[] TestedVersions = { "1.19.0", "3.1.7", "17.5.0", "2.5.0" };
         private bool _demosReady;
 
-        [MenuItem("Tools/Step Height Controller/Setup & Demos", false, 0)]
+        [MenuItem("Tools/StepHeightController/Setup & Demos", false, 0)]
         public static void Open()
         {
             var window = GetWindow<StepHeightSetupWindow>();

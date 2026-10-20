@@ -27,7 +27,7 @@ namespace LB.StepHeight.Diagnostics
         private float _lastCompletionTime = float.NegativeInfinity;
         private int _nextTraceId = 1;
 
-        [MenuItem("Tools/Step Height Controller/Open Motion Debugger")]
+        [MenuItem("Tools/StepHeightController Dev/Open Motion Debugger", false, 0)]
         private static void OpenWindow() => GetWindow<StepMotionDebuggerWindow>("Step Motion Debugger");
 
         private void OnEnable()

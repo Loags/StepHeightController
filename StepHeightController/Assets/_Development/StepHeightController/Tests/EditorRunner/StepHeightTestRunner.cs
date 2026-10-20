@@ -6,21 +6,21 @@ namespace LB.StepHeight.Tests
 {
     internal static class StepHeightTestRunner
     {
-        private const string MenuPath = "Tools/Step Height Controller/Run Focused Tests";
-        private const string EditModeMenuPath = "Tools/Step Height Controller/Run Focused EditMode Tests";
-        private const string PlayModeMenuPath = "Tools/Step Height Controller/Run Focused PlayMode Tests";
+        private const string MenuPath = "Tools/StepHeightController Dev/Tests/Run All";
+        private const string EditModeMenuPath = "Tools/StepHeightController Dev/Tests/Run EditMode";
+        private const string PlayModeMenuPath = "Tools/StepHeightController Dev/Tests/Run PlayMode";
 
-        [MenuItem(MenuPath)]
+        [MenuItem(MenuPath, false, 20)]
         private static void RunFocusedTests()
         {
             RunTests(TestMode.EditMode, "LB.StepHeight.Tests.EditMode", true);
         }
 
-        [MenuItem(EditModeMenuPath)]
+        [MenuItem(EditModeMenuPath, false, 21)]
         private static void RunFocusedEditModeTests() =>
             RunTests(TestMode.EditMode, "LB.StepHeight.Tests.EditMode", false);
 
-        [MenuItem(PlayModeMenuPath)]
+        [MenuItem(PlayModeMenuPath, false, 22)]
         private static void RunFocusedPlayModeTests() =>
             RunTests(TestMode.PlayMode, "LB.StepHeight.Tests.PlayMode", false);
 

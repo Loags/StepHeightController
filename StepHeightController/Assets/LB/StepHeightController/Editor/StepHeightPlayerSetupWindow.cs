@@ -15,7 +15,7 @@ namespace LB.StepHeight.Editor
         private Label _preview;
         private Button _applyButton;
 
-        [MenuItem("Tools/Step Height Controller/Configure Rigidbody Player", false, 1)]
+        [MenuItem("Tools/StepHeightController/Configure Rigidbody Player", false, 1)]
         public static void Open()
         {
             var window = GetWindow<StepHeightPlayerSetupWindow>();
